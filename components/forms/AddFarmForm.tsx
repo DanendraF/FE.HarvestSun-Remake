@@ -25,6 +25,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import { farmService } from '@/lib/api/farmService';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 const farmSchema = z.object({
   name: z.string().min(2, { message: 'Nama lahan minimal 2 karakter' }),
@@ -35,8 +37,15 @@ const farmSchema = z.object({
   healthScore: z.coerce.number().min(0).max(100).default(100),
 });
 
-export function AddFarmForm({ children }: { children: React.ReactNode }) {
+interface AddFarmFormProps {
+  children: React.ReactNode;
+  onSuccess?: () => void;
+}
+
+export function AddFarmForm({ children, onSuccess }: AddFarmFormProps) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const form = useForm<z.infer<typeof farmSchema>>({
     resolver: zodResolver(farmSchema),
     defaultValues: {
@@ -49,11 +58,27 @@ export function AddFarmForm({ children }: { children: React.ReactNode }) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof farmSchema>) {
-    console.log(values);
-    toast.success('Lahan berhasil ditambahkan (Mock)');
-    setOpen(false);
-    form.reset();
+  async function onSubmit(values: z.infer<typeof farmSchema>) {
+    if (!user) {
+      toast.error('Anda harus login terlebih dahulu');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await farmService.createFarm({
+        ...values,
+        userId: user.id,
+      });
+      toast.success('Lahan berhasil ditambahkan');
+      setOpen(false);
+      form.reset();
+      if (onSuccess) onSuccess();
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal menambahkan lahan');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -162,10 +187,12 @@ export function AddFarmForm({ children }: { children: React.ReactNode }) {
               />
             </div>
             <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
                 Batal
               </Button>
-              <Button type="submit">Simpan Lahan</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Menyimpan...' : 'Simpan Lahan'}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

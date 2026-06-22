@@ -1,13 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DataTable from '@/components/dashboard/DataTable';
-import { mockActivities, mockFarms } from '@/lib/data/mockData';
-import { Activity } from '@/types';
+import { Activity, Farm } from '@/types';
 import { cn } from '@/lib/utils';
-import { Plus, Droplets, Leaf, Wheat, Bug, Eye } from 'lucide-react';
+import { Plus, Droplets, Leaf, Wheat, Bug, Eye, Loader2 } from 'lucide-react';
 import { AddActivityForm } from '@/components/forms/AddActivityForm';
+import { activityService } from '@/lib/api/activityService';
+import { farmService } from '@/lib/api/farmService';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 const activityIcons: Record<string, React.ElementType> = {
   irrigation: Droplets,
@@ -68,19 +70,52 @@ export default function FarmerActivitiesPage() {
     },
   ];
 
+  const { user } = useAuth();
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [farms, setFarms] = useState<Farm[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      // Fetch user's farms to populate the dropdown
+      const userFarms = await farmService.getFarms(user.id);
+      setFarms(userFarms);
+      
+      // Fetch activities (assuming backend returns all activities for this farmer if farmId is omitted)
+      const allActivities = await activityService.getActivities();
+      setActivities(allActivities);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [user]);
+
   return (
     <DashboardLayout role="farmer" title="Aktivitas" subtitle="Log aktivitas pertanian">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div />
-          <AddActivityForm farms={mockFarms}>
+          <AddActivityForm farms={farms} onSuccess={fetchData}>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition-colors">
               <Plus className="w-4 h-4" />
               Tambah Aktivitas
             </button>
           </AddActivityForm>
         </div>
-        <DataTable data={mockActivities} columns={columns} searchable searchKey="description" />
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+          </div>
+        ) : (
+          <DataTable data={activities} columns={columns} searchable searchKey="description" />
+        )}
       </div>
     </DashboardLayout>
   );

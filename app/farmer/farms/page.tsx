@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DataTable from '@/components/dashboard/DataTable';
-import { mockFarms } from '@/lib/data/mockData';
 import { Farm } from '@/types';
 import { cn } from '@/lib/utils';
-import { MapPin, Plus } from 'lucide-react';
+import { MapPin, Plus, Loader2 } from 'lucide-react';
+import { farmService } from '@/lib/api/farmService';
+import { useAuth } from '@/lib/auth/AuthContext';
 import dynamic from 'next/dynamic';
 import { AddFarmForm } from '@/components/forms/AddFarmForm';
 
@@ -71,12 +72,33 @@ export default function FarmerFarmsPage() {
     },
   ];
 
+  const { user } = useAuth();
+  const [farms, setFarms] = useState<Farm[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchFarms = async () => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      const data = await farmService.getFarms(user.id);
+      setFarms(data);
+    } catch (error) {
+      console.error('Failed to fetch farms:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFarms();
+  }, [user]);
+
   return (
     <DashboardLayout role="farmer" title="Lahan Saya" subtitle="Kelola dan pantau semua lahan pertanian">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div />
-          <AddFarmForm>
+          <AddFarmForm onSuccess={fetchFarms}>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition-colors">
               <Plus className="w-4 h-4" />
               Tambah Lahan
@@ -84,9 +106,16 @@ export default function FarmerFarmsPage() {
           </AddFarmForm>
         </div>
         
-        <InteractiveMap farms={mockFarms} />
-        
-        <DataTable data={mockFarms} columns={columns} searchable searchKey="name" />
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+          </div>
+        ) : (
+          <>
+            <InteractiveMap farms={farms} />
+            <DataTable data={farms} columns={columns} searchable searchKey="name" />
+          </>
+        )}
       </div>
     </DashboardLayout>
   );

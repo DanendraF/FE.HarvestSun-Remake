@@ -32,6 +32,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Farm } from '@/types';
+import { activityService } from '@/lib/api/activityService';
 
 const activitySchema = z.object({
   farmId: z.string().min(1, { message: 'Pilih lahan' }),
@@ -47,10 +48,12 @@ const activitySchema = z.object({
 interface AddActivityFormProps {
   children: React.ReactNode;
   farms: Farm[];
+  onSuccess?: () => void;
 }
 
-export function AddActivityForm({ children, farms }: AddActivityFormProps) {
+export function AddActivityForm({ children, farms, onSuccess }: AddActivityFormProps) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof activitySchema>>({
     resolver: zodResolver(activitySchema),
     defaultValues: {
@@ -62,11 +65,21 @@ export function AddActivityForm({ children, farms }: AddActivityFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof activitySchema>) {
-    console.log(values);
-    toast.success('Aktivitas berhasil ditambahkan (Mock)');
-    setOpen(false);
-    form.reset();
+  async function onSubmit(values: z.infer<typeof activitySchema>) {
+    setLoading(true);
+    try {
+      await activityService.createActivity({
+        ...values,
+      });
+      toast.success('Aktivitas berhasil ditambahkan');
+      setOpen(false);
+      form.reset();
+      if (onSuccess) onSuccess();
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal menambahkan aktivitas');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -229,10 +242,12 @@ export function AddActivityForm({ children, farms }: AddActivityFormProps) {
             />
 
             <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
                 Batal
               </Button>
-              <Button type="submit">Simpan Aktivitas</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Menyimpan...' : 'Simpan Aktivitas'}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

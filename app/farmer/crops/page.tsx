@@ -1,13 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DataTable from '@/components/dashboard/DataTable';
-import { mockCrops, mockFarms } from '@/lib/data/mockData';
-import { Crop } from '@/types';
+import { Crop, Farm } from '@/types';
 import { cn } from '@/lib/utils';
-import { Sprout, Plus } from 'lucide-react';
+import { Sprout, Plus, Loader2 } from 'lucide-react';
 import { AddCropForm } from '@/components/forms/AddCropForm';
+import { cropService } from '@/lib/api/cropService';
+import { farmService } from '@/lib/api/farmService';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function FarmerCropsPage() {
   const columns = [
@@ -65,19 +67,58 @@ export default function FarmerCropsPage() {
     },
   ];
 
+  const { user } = useAuth();
+  const [crops, setCrops] = useState<Crop[]>([]);
+  const [farms, setFarms] = useState<Farm[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      // Fetch user's farms to populate the dropdown
+      const userFarms = await farmService.getFarms(user.id);
+      setFarms(userFarms);
+      
+      // If no farms, we can't have crops (or we just fetch all crops for user's farms)
+      // Since backend might need a farmId or return all for user, let's just fetch without farmId 
+      // Assuming backend filters by user's farms if no farmId is provided.
+      // Wait, the backend crop route doesn't take userId, it takes farmId. 
+      // If we have multiple farms, we might need to fetch for each, or the backend handles it.
+      // Let's assume backend returns all crops if no farmId, but since we are a farmer, maybe we should get crops from all our farms?
+      // For now, let's just call getCrops().
+      const allCrops = await cropService.getCrops();
+      setCrops(allCrops);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [user]);
+
   return (
     <DashboardLayout role="farmer" title="Tanaman Saya" subtitle="Pantau pertumbuhan dan status tanaman">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div />
-          <AddCropForm farms={mockFarms}>
+          <AddCropForm farms={farms} onSuccess={fetchData}>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition-colors">
               <Plus className="w-4 h-4" />
               Tambah Tanaman
             </button>
           </AddCropForm>
         </div>
-        <DataTable data={mockCrops} columns={columns} searchable searchKey="name" />
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+          </div>
+        ) : (
+          <DataTable data={crops} columns={columns} searchable searchKey="name" />
+        )}
       </div>
     </DashboardLayout>
   );

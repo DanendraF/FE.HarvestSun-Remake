@@ -31,6 +31,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Farm } from '@/types';
+import { cropService } from '@/lib/api/cropService';
 
 const cropSchema = z.object({
   farmId: z.string().min(1, { message: 'Pilih lahan' }),
@@ -47,10 +48,12 @@ const cropSchema = z.object({
 interface AddCropFormProps {
   children: React.ReactNode;
   farms: Farm[];
+  onSuccess?: () => void;
 }
 
-export function AddCropForm({ children, farms }: AddCropFormProps) {
+export function AddCropForm({ children, farms, onSuccess }: AddCropFormProps) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof cropSchema>>({
     resolver: zodResolver(cropSchema),
     defaultValues: {
@@ -62,11 +65,21 @@ export function AddCropForm({ children, farms }: AddCropFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof cropSchema>) {
-    console.log(values);
-    toast.success('Tanaman berhasil ditambahkan (Mock)');
-    setOpen(false);
-    form.reset();
+  async function onSubmit(values: z.infer<typeof cropSchema>) {
+    setLoading(true);
+    try {
+      await cropService.createCrop({
+        ...values,
+      });
+      toast.success('Tanaman berhasil ditambahkan');
+      setOpen(false);
+      form.reset();
+      if (onSuccess) onSuccess();
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal menambahkan tanaman');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -257,10 +270,12 @@ export function AddCropForm({ children, farms }: AddCropFormProps) {
             />
 
             <DialogFooter className="pt-4">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
                 Batal
               </Button>
-              <Button type="submit">Simpan Tanaman</Button>
+              <Button type="submit" disabled={loading}>
+                {loading ? 'Menyimpan...' : 'Simpan Tanaman'}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
