@@ -70,7 +70,8 @@ export function AddActivityForm({ children, farms, onSuccess }: AddActivityFormP
     try {
       await activityService.createActivity({
         ...values,
-      });
+        date: values.date.toISOString(),
+      } as any);
       toast.success('Aktivitas berhasil ditambahkan');
       setOpen(false);
       form.reset();

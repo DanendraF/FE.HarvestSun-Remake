@@ -27,11 +27,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
+import dynamic from 'next/dynamic';
+
+const MapPicker = dynamic(() => import('./MapPicker'), {
+  ssr: false,
+});
 
 const farmSchema = z.object({
   name: z.string().min(2, { message: 'Nama lahan minimal 2 karakter' }),
   location: z.string().optional(),
-  size: z.coerce.number().min(0.1, { message: 'Ukuran lahan harus lebih dari 0' }),
+  latitude: z.number({ required_error: 'Silakan pilih titik di peta' }),
+  longitude: z.number({ required_error: 'Silakan pilih titik di peta' }),
+  size: z.coerce.number().min(0.1, { message: 'Luas lahan minimal 0.1 ha' }),
   cropType: z.string().optional(),
   status: z.enum(['active', 'inactive', 'harvesting']).default('active'),
   healthScore: z.coerce.number().min(0).max(100).default(100),
@@ -69,7 +76,7 @@ export function AddFarmForm({ children, onSuccess }: AddFarmFormProps) {
       await farmService.createFarm({
         ...values,
         userId: user.id,
-      });
+      } as any);
       toast.success('Lahan berhasil ditambahkan');
       setOpen(false);
       form.reset();
@@ -113,14 +120,30 @@ export function AddFarmForm({ children, onSuccess }: AddFarmFormProps) {
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Lokasi</FormLabel>
+                  <FormLabel>Lokasi / Alamat</FormLabel>
                   <FormControl>
-                    <Input placeholder="Contoh: Sleman, Yogyakarta" {...field} />
+                    <Input placeholder="Desa Sumber Makmur, Kec. Godean" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            
+            <div className="space-y-2">
+              <FormLabel>Pilih Titik di Peta</FormLabel>
+              <MapPicker 
+                onLocationSelect={(lat, lng) => {
+                  form.setValue('latitude', lat, { shouldValidate: true });
+                  form.setValue('longitude', lng, { shouldValidate: true });
+                }}
+                defaultLat={form.watch('latitude')}
+                defaultLng={form.watch('longitude')}
+              />
+              {(!form.watch('latitude') || !form.watch('longitude')) && form.formState.isSubmitted && (
+                <p className="text-[0.8rem] font-medium text-destructive">Silakan pilih titik lokasi di peta terlebih dahulu</p>
+              )}
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}

@@ -39,14 +39,14 @@ export interface ChartDataPoint {
 export interface Farm {
   id: string;
   name: string;
-  location: string;
+  location?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   size: number;
   crop_type: string;
   status: 'active' | 'inactive' | 'harvesting';
   health_score: number;
   created_at: string;
-  latitude?: number;
-  longitude?: number;
 }
 
 export interface Crop {
