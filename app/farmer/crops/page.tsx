@@ -61,49 +61,70 @@ export default function FarmerCropsPage() {
         </div>
       ),
     },
-    { key: 'growth_stage', header: 'Fase' },
+    { key: 'growthStage', header: 'Fase' },
     {
-      key: 'planting_date',
+      key: 'plantingDate',
       header: 'Tanggal Tanam',
-      render: (row: Crop) => <span>{new Date(row.planting_date).toLocaleDateString('id-ID')}</span>,
+      render: (row: Crop) => <span>{row.plantingDate ? new Date(row.plantingDate).toLocaleDateString('id-ID') : '-'}</span>,
     },
     {
-      key: 'expected_harvest',
+      key: 'expectedHarvest',
       header: 'Est. Panen',
-      render: (row: Crop) => <span>{new Date(row.expected_harvest).toLocaleDateString('id-ID')}</span>,
+      render: (row: Crop) => <span>{row.expectedHarvest ? new Date(row.expectedHarvest).toLocaleDateString('id-ID') : '-'}</span>,
     },
     {
-      key: 'health_status',
+      key: 'healthStatus',
       header: 'Kesehatan',
       render: (row: Crop) => (
         <span className={cn(
           'text-xs px-2 py-1 rounded-full font-medium',
-          row.health_status === 'healthy' && 'bg-emerald-500/10 text-emerald-600',
-          row.health_status === 'warning' && 'bg-amber-500/10 text-amber-600',
-          row.health_status === 'critical' && 'bg-red-500/10 text-red-600'
+          row.healthStatus === 'healthy' && 'bg-emerald-500/10 text-emerald-600',
+          row.healthStatus === 'warning' && 'bg-amber-500/10 text-amber-600',
+          row.healthStatus === 'critical' && 'bg-red-500/10 text-red-600'
         )}>
-          {row.health_status === 'healthy' ? 'Sehat' : row.health_status === 'warning' ? 'Waspada' : 'Kritis'}
+          {row.healthStatus === 'healthy' ? 'Sehat' : row.healthStatus === 'warning' ? 'Waspada' : 'Kritis'}
         </span>
       ),
     },
     {
       key: 'progress',
       header: 'Progress',
-      render: (row: Crop) => (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="flex items-center gap-2 cursor-help">
-              <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
-                <div className={cn('h-full rounded-full bg-emerald-500')} style={{ width: `${row.progress}%` }} />
+      render: (row: Crop) => {
+        let calculatedProgress = row.progress || 0;
+        if (row.plantingDate && row.expectedHarvest) {
+          const planting = new Date(row.plantingDate).getTime();
+          const harvest = new Date(row.expectedHarvest).getTime();
+          const now = new Date().getTime();
+
+          if (harvest > planting) {
+            if (now >= harvest) {
+              calculatedProgress = 100;
+            } else if (now <= planting) {
+              calculatedProgress = 0;
+            } else {
+              const totalDuration = harvest - planting;
+              const elapsed = now - planting;
+              calculatedProgress = Math.round((elapsed / totalDuration) * 100);
+            }
+          }
+        }
+        
+        return (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-2 cursor-help">
+                <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
+                  <div className={cn('h-full rounded-full bg-emerald-500')} style={{ width: `${calculatedProgress}%` }} />
+                </div>
+                <span className="text-xs font-medium">{calculatedProgress}%</span>
               </div>
-              <span className="text-xs font-medium">{row.progress}%</span>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Progress Pertumbuhan: {row.progress}%</p>
-          </TooltipContent>
-        </Tooltip>
-      ),
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Progress Pertumbuhan: {calculatedProgress}%</p>
+            </TooltipContent>
+          </Tooltip>
+        );
+      },
     },
     {
       key: 'actions',

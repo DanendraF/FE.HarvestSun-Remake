@@ -58,7 +58,7 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
   const form = useForm<z.infer<typeof activitySchema>>({
     resolver: zodResolver(activitySchema),
     defaultValues: {
-      farmId: initialData?.farm_id || '',
+      farmId: initialData?.farmId || '',
       type: initialData?.type as any || 'monitoring',
       description: initialData?.description || '',
       status: initialData?.status as any || 'scheduled',
@@ -71,7 +71,7 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
     if (open) {
       if (initialData) {
         form.reset({
-          farmId: initialData.farm_id || '',
+          farmId: initialData.farmId || '',
           type: initialData.type as any || 'monitoring',
           description: initialData.description || '',
           status: initialData.status as any || 'scheduled',

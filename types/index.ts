@@ -51,19 +51,19 @@ export interface Farm {
 
 export interface Crop {
   id: string;
-  farm_id: string;
+  farmId: string;
   name: string;
   variety: string;
-  planting_date: string;
-  expected_harvest: string;
-  growth_stage: string;
-  health_status: 'healthy' | 'warning' | 'critical';
+  plantingDate: string;
+  expectedHarvest: string;
+  growthStage: string;
+  healthStatus: 'healthy' | 'warning' | 'critical';
   progress: number;
 }
 
 export interface Activity {
   id: string;
-  farm_id: string;
+  farmId: string;
   type: 'irrigation' | 'fertilizing' | 'harvesting' | 'pest_control' | 'monitoring';
   description: string;
   date: string;
@@ -73,11 +73,11 @@ export interface Activity {
 
 export interface DiseaseAlert {
   id: string;
-  farm_id: string;
-  disease_name: string;
+  farmId: string;
+  diseaseName: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  detected_at: string;
-  image_url?: string;
+  detectedAt: string;
+  imageUrl?: string;
   status: 'active' | 'resolved';
   recommendation?: string;
 }

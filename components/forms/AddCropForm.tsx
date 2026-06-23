@@ -58,13 +58,13 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
   const form = useForm<z.infer<typeof cropSchema>>({
     resolver: zodResolver(cropSchema),
     defaultValues: {
-      farmId: initialData?.farm_id || '',
+      farmId: initialData?.farmId || '',
       name: initialData?.name || '',
       variety: initialData?.variety || '',
-      growthStage: initialData?.growth_stage || 'Vegetatif',
-      healthStatus: initialData?.health_status || 'healthy',
-      plantingDate: initialData?.planting_date ? new Date(initialData.planting_date) : undefined as any,
-      expectedHarvest: initialData?.expected_harvest ? new Date(initialData.expected_harvest) : undefined as any,
+      growthStage: initialData?.growthStage || 'Vegetatif',
+      healthStatus: initialData?.healthStatus || 'healthy',
+      plantingDate: initialData?.plantingDate ? new Date(initialData.plantingDate) : undefined as any,
+      expectedHarvest: initialData?.expectedHarvest ? new Date(initialData.expectedHarvest) : undefined as any,
     },
   });
 
@@ -72,13 +72,13 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
     if (open) {
       if (initialData) {
         form.reset({
-          farmId: initialData.farm_id || '',
+          farmId: initialData.farmId || '',
           name: initialData.name || '',
           variety: initialData.variety || '',
-          growthStage: initialData.growth_stage || 'Vegetatif',
-          healthStatus: initialData.health_status || 'healthy',
-          plantingDate: initialData.planting_date ? new Date(initialData.planting_date) : undefined as any,
-          expectedHarvest: initialData.expected_harvest ? new Date(initialData.expected_harvest) : undefined as any,
+          growthStage: initialData.growthStage || 'Vegetatif',
+          healthStatus: initialData.healthStatus || 'healthy',
+          plantingDate: initialData.plantingDate ? new Date(initialData.plantingDate) : undefined as any,
+          expectedHarvest: initialData.expectedHarvest ? new Date(initialData.expectedHarvest) : undefined as any,
         });
       } else {
         form.reset({
