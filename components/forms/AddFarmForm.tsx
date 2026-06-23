@@ -27,6 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { Farm } from '@/types';
 import dynamic from 'next/dynamic';
 
 const MapPicker = dynamic(() => import('./MapPicker'), {
@@ -46,22 +47,25 @@ const farmSchema = z.object({
 
 interface AddFarmFormProps {
   children: React.ReactNode;
+  initialData?: Farm;
   onSuccess?: () => void;
 }
 
-export function AddFarmForm({ children, onSuccess }: AddFarmFormProps) {
+export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const form = useForm<z.infer<typeof farmSchema>>({
     resolver: zodResolver(farmSchema),
     defaultValues: {
-      name: '',
-      location: '',
-      size: 1,
-      cropType: '',
-      status: 'active',
-      healthScore: 100,
+      name: initialData?.name || '',
+      location: initialData?.location || '',
+      latitude: initialData?.latitude || undefined,
+      longitude: initialData?.longitude || undefined,
+      size: initialData?.size || 1,
+      cropType: initialData?.crop_type || '',
+      status: initialData?.status || 'active',
+      healthScore: initialData?.health_score || 100,
     },
   });
 
@@ -73,16 +77,24 @@ export function AddFarmForm({ children, onSuccess }: AddFarmFormProps) {
     
     setLoading(true);
     try {
-      await farmService.createFarm({
-        ...values,
-        userId: user.id,
-      } as any);
-      toast.success('Lahan berhasil ditambahkan');
+      if (initialData) {
+        await farmService.updateFarm(initialData.id, {
+          ...values,
+          userId: user.id,
+        } as any);
+        toast.success('Lahan berhasil diperbarui');
+      } else {
+        await farmService.createFarm({
+          ...values,
+          userId: user.id,
+        } as any);
+        toast.success('Lahan berhasil ditambahkan');
+      }
       setOpen(false);
-      form.reset();
+      if (!initialData) form.reset();
       if (onSuccess) onSuccess();
     } catch (error: any) {
-      toast.error(error.message || 'Gagal menambahkan lahan');
+      toast.error(error.message || (initialData ? 'Gagal memperbarui lahan' : 'Gagal menambahkan lahan'));
     } finally {
       setLoading(false);
     }
@@ -95,9 +107,11 @@ export function AddFarmForm({ children, onSuccess }: AddFarmFormProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Tambah Lahan Baru</DialogTitle>
+          <DialogTitle>{initialData ? 'Edit Lahan' : 'Tambah Lahan Baru'}</DialogTitle>
           <DialogDescription>
-            Masukkan detail lahan pertanian Anda di sini. Klik simpan setelah selesai.
+            {initialData 
+              ? 'Ubah detail lahan pertanian Anda di sini. Klik simpan setelah selesai.' 
+              : 'Masukkan detail lahan pertanian Anda di sini. Klik simpan setelah selesai.'}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -214,7 +228,7 @@ export function AddFarmForm({ children, onSuccess }: AddFarmFormProps) {
                 Batal
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Menyimpan...' : 'Simpan Lahan'}
+                {loading ? 'Menyimpan...' : (initialData ? 'Simpan Perubahan' : 'Simpan Lahan')}
               </Button>
             </DialogFooter>
           </form>

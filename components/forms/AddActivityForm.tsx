@@ -31,7 +31,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Farm } from '@/types';
+import { Farm, Activity } from '@/types';
 import { activityService } from '@/lib/api/activityService';
 
 const activitySchema = z.object({
@@ -48,36 +48,46 @@ const activitySchema = z.object({
 interface AddActivityFormProps {
   children: React.ReactNode;
   farms: Farm[];
+  initialData?: Activity;
   onSuccess?: () => void;
 }
 
-export function AddActivityForm({ children, farms, onSuccess }: AddActivityFormProps) {
+export function AddActivityForm({ children, farms, initialData, onSuccess }: AddActivityFormProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof activitySchema>>({
     resolver: zodResolver(activitySchema),
     defaultValues: {
-      farmId: '',
-      type: 'monitoring',
-      description: '',
-      status: 'scheduled',
-      cost: 0,
+      farmId: initialData?.farm_id || '',
+      type: initialData?.type as any || 'monitoring',
+      description: initialData?.description || '',
+      status: initialData?.status as any || 'scheduled',
+      cost: initialData?.cost || 0,
+      date: initialData?.date ? new Date(initialData.date) : undefined as any,
     },
   });
 
   async function onSubmit(values: z.infer<typeof activitySchema>) {
     setLoading(true);
     try {
-      await activityService.createActivity({
-        ...values,
-        date: values.date.toISOString(),
-      } as any);
-      toast.success('Aktivitas berhasil ditambahkan');
+      if (initialData) {
+        await activityService.updateActivity(initialData.id, {
+          ...values,
+          date: values.date.toISOString(),
+        } as any);
+        toast.success('Aktivitas berhasil diperbarui');
+      } else {
+        await activityService.createActivity({
+          ...values,
+          date: values.date.toISOString(),
+        } as any);
+        toast.success('Aktivitas berhasil ditambahkan');
+      }
       setOpen(false);
-      form.reset();
+      if (!initialData) form.reset();
       if (onSuccess) onSuccess();
     } catch (error: any) {
-      toast.error(error.message || 'Gagal menambahkan aktivitas');
+      toast.error(error.message || (initialData ? 'Gagal memperbarui aktivitas' : 'Gagal menambahkan aktivitas'));
     } finally {
       setLoading(false);
     }
@@ -90,9 +100,9 @@ export function AddActivityForm({ children, farms, onSuccess }: AddActivityFormP
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Tambah Aktivitas Baru</DialogTitle>
+          <DialogTitle>{initialData ? 'Edit Aktivitas' : 'Tambah Aktivitas Baru'}</DialogTitle>
           <DialogDescription>
-            Catat aktivitas operasional di lahan Anda.
+            {initialData ? 'Ubah detail aktivitas lahan Anda.' : 'Catat aktivitas operasional di lahan Anda.'}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -247,7 +257,7 @@ export function AddActivityForm({ children, farms, onSuccess }: AddActivityFormP
                 Batal
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Menyimpan...' : 'Simpan Aktivitas'}
+                {loading ? 'Menyimpan...' : (initialData ? 'Simpan Perubahan' : 'Simpan Aktivitas')}
               </Button>
             </DialogFooter>
           </form>

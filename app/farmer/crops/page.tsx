@@ -5,13 +5,44 @@ import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DataTable from '@/components/dashboard/DataTable';
 import { Crop, Farm } from '@/types';
 import { cn } from '@/lib/utils';
-import { Sprout, Plus, Loader2 } from 'lucide-react';
+import { Sprout, Plus, Loader2, Edit2, Trash2 } from 'lucide-react';
 import { AddCropForm } from '@/components/forms/AddCropForm';
 import { cropService } from '@/lib/api/cropService';
 import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function FarmerCropsPage() {
+  const { user } = useAuth();
+  const [crops, setCrops] = useState<Crop[]>([]);
+  const [farms, setFarms] = useState<Farm[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      const userFarms = await farmService.getFarms(user.id);
+      setFarms(userFarms);
+      const allCrops = await cropService.getCrops();
+      setCrops(allCrops);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Yakin ingin menghapus tanaman ini?')) {
+      try {
+        await cropService.deleteCrop(id);
+        fetchData();
+      } catch (error) {
+        console.error('Failed to delete crop:', error);
+      }
+    }
+  };
+
   const columns = [
     {
       key: 'name',
@@ -65,36 +96,27 @@ export default function FarmerCropsPage() {
         </div>
       ),
     },
+    {
+      key: 'actions',
+      header: 'Aksi',
+      render: (row: Crop) => (
+        <div className="flex items-center gap-2">
+          <AddCropForm farms={farms} initialData={row} onSuccess={fetchData}>
+            <button className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Edit">
+              <Edit2 className="w-4 h-4" />
+            </button>
+          </AddCropForm>
+          <button 
+            onClick={() => handleDelete(row.id)}
+            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+            title="Hapus"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
   ];
-
-  const { user } = useAuth();
-  const [crops, setCrops] = useState<Crop[]>([]);
-  const [farms, setFarms] = useState<Farm[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchData = async () => {
-    if (!user) return;
-    try {
-      setLoading(true);
-      // Fetch user's farms to populate the dropdown
-      const userFarms = await farmService.getFarms(user.id);
-      setFarms(userFarms);
-      
-      // If no farms, we can't have crops (or we just fetch all crops for user's farms)
-      // Since backend might need a farmId or return all for user, let's just fetch without farmId 
-      // Assuming backend filters by user's farms if no farmId is provided.
-      // Wait, the backend crop route doesn't take userId, it takes farmId. 
-      // If we have multiple farms, we might need to fetch for each, or the backend handles it.
-      // Let's assume backend returns all crops if no farmId, but since we are a farmer, maybe we should get crops from all our farms?
-      // For now, let's just call getCrops().
-      const allCrops = await cropService.getCrops();
-      setCrops(allCrops);
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchData();

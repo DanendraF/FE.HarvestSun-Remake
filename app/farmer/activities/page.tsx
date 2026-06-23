@@ -5,7 +5,7 @@ import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DataTable from '@/components/dashboard/DataTable';
 import { Activity, Farm } from '@/types';
 import { cn } from '@/lib/utils';
-import { Plus, Droplets, Leaf, Wheat, Bug, Eye, Loader2 } from 'lucide-react';
+import { Plus, Droplets, Leaf, Wheat, Bug, Eye, Loader2, Edit2, Trash2 } from 'lucide-react';
 import { AddActivityForm } from '@/components/forms/AddActivityForm';
 import { activityService } from '@/lib/api/activityService';
 import { farmService } from '@/lib/api/farmService';
@@ -20,6 +20,38 @@ const activityIcons: Record<string, React.ElementType> = {
 };
 
 export default function FarmerActivitiesPage() {
+  const { user } = useAuth();
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [farms, setFarms] = useState<Farm[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      const userFarms = await farmService.getFarms(user.id);
+      setFarms(userFarms);
+      
+      const allActivities = await activityService.getActivities();
+      setActivities(allActivities);
+    } catch (error) {
+      console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Yakin ingin menghapus aktivitas ini?')) {
+      try {
+        await activityService.deleteActivity(id);
+        fetchData();
+      } catch (error) {
+        console.error('Failed to delete activity:', error);
+      }
+    }
+  };
+
   const columns = [
     {
       key: 'type',
@@ -68,30 +100,27 @@ export default function FarmerActivitiesPage() {
       header: 'Biaya',
       render: (row: Activity) => <span>{row.cost ? `Rp ${row.cost.toLocaleString('id-ID')}` : '-'}</span>,
     },
+    {
+      key: 'actions',
+      header: 'Aksi',
+      render: (row: Activity) => (
+        <div className="flex items-center gap-2">
+          <AddActivityForm farms={farms} initialData={row} onSuccess={fetchData}>
+            <button className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Edit">
+              <Edit2 className="w-4 h-4" />
+            </button>
+          </AddActivityForm>
+          <button 
+            onClick={() => handleDelete(row.id)}
+            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+            title="Hapus"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
   ];
-
-  const { user } = useAuth();
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [farms, setFarms] = useState<Farm[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchData = async () => {
-    if (!user) return;
-    try {
-      setLoading(true);
-      // Fetch user's farms to populate the dropdown
-      const userFarms = await farmService.getFarms(user.id);
-      setFarms(userFarms);
-      
-      // Fetch activities (assuming backend returns all activities for this farmer if farmId is omitted)
-      const allActivities = await activityService.getActivities();
-      setActivities(allActivities);
-    } catch (error) {
-      console.error('Failed to fetch data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchData();

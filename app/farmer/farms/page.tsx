@@ -5,7 +5,7 @@ import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DataTable from '@/components/dashboard/DataTable';
 import { Farm } from '@/types';
 import { cn } from '@/lib/utils';
-import { MapPin, Plus, Loader2 } from 'lucide-react';
+import { MapPin, Plus, Loader2, Edit2, Trash2 } from 'lucide-react';
 import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
 import dynamic from 'next/dynamic';
@@ -24,6 +24,34 @@ const InteractiveMap = dynamic(() => import('@/components/dashboard/InteractiveM
 });
 
 export default function FarmerFarmsPage() {
+  const { user } = useAuth();
+  const [farms, setFarms] = useState<Farm[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchFarms = async () => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      const data = await farmService.getFarms(user.id);
+      setFarms(data);
+    } catch (error) {
+      console.error('Failed to fetch farms:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Yakin ingin menghapus lahan ini? Semua tanaman dan aktivitas terkait juga akan terhapus.')) {
+      try {
+        await farmService.deleteFarm(id);
+        fetchFarms();
+      } catch (error) {
+        console.error('Failed to delete farm:', error);
+      }
+    }
+  };
+
   const columns = [
     {
       key: 'name',
@@ -70,24 +98,27 @@ export default function FarmerFarmsPage() {
         </div>
       ),
     },
+    {
+      key: 'actions',
+      header: 'Aksi',
+      render: (row: Farm) => (
+        <div className="flex items-center gap-2">
+          <AddFarmForm initialData={row} onSuccess={fetchFarms}>
+            <button className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Edit">
+              <Edit2 className="w-4 h-4" />
+            </button>
+          </AddFarmForm>
+          <button 
+            onClick={() => handleDelete(row.id)}
+            className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+            title="Hapus"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
   ];
-
-  const { user } = useAuth();
-  const [farms, setFarms] = useState<Farm[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchFarms = async () => {
-    if (!user) return;
-    try {
-      setLoading(true);
-      const data = await farmService.getFarms(user.id);
-      setFarms(data);
-    } catch (error) {
-      console.error('Failed to fetch farms:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchFarms();
