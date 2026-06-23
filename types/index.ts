@@ -121,3 +121,17 @@ export interface SystemLog {
   source: string;
   timestamp: string;
 }
+
+export interface CropType {
+  id: string;
+  name: string;
+  variety?: string;
+  season?: string;
+}
+
+export interface ActivityType {
+  id: string;
+  name: string;
+  category?: string;
+  icon?: string;
+}

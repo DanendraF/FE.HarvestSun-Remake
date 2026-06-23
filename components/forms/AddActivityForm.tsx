@@ -31,12 +31,13 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Farm, Activity } from '@/types';
+import { Farm, Activity, ActivityType } from '@/types';
 import { activityService } from '@/lib/api/activityService';
+import { masterDataService } from '@/lib/api/masterDataService';
 
 const activitySchema = z.object({
   farmId: z.string().min(1, { message: 'Pilih lahan' }),
-  type: z.enum(['irrigation', 'fertilizing', 'harvesting', 'pest_control', 'monitoring']),
+  type: z.string().min(1, { message: 'Pilih jenis aktivitas' }),
   description: z.string().optional(),
   date: z.date({
     required_error: "Pilih tanggal aktivitas",
@@ -55,6 +56,7 @@ interface AddActivityFormProps {
 export function AddActivityForm({ children, farms, initialData, onSuccess }: AddActivityFormProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
   const form = useForm<z.infer<typeof activitySchema>>({
     resolver: zodResolver(activitySchema),
     defaultValues: {
@@ -66,6 +68,18 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
       date: initialData?.date ? new Date(initialData.date) : undefined as any,
     },
   });
+
+  React.useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const types = await masterDataService.getActivityTypes();
+        setActivityTypes(types);
+      } catch (error) {
+        console.error('Failed to load activity types', error);
+      }
+    };
+    fetchMasterData();
+  }, []);
 
   React.useEffect(() => {
     if (open) {
@@ -170,11 +184,11 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="irrigation">Irigasi/Penyiraman</SelectItem>
-                        <SelectItem value="fertilizing">Pemupukan</SelectItem>
-                        <SelectItem value="pest_control">Pengendalian Hama</SelectItem>
-                        <SelectItem value="monitoring">Pemantauan</SelectItem>
-                        <SelectItem value="harvesting">Panen</SelectItem>
+                        {activityTypes.map((act) => (
+                          <SelectItem key={act.id} value={act.name}>
+                            {act.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />

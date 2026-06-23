@@ -30,8 +30,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Farm, Crop } from '@/types';
+import { Farm, Crop, CropType } from '@/types';
 import { cropService } from '@/lib/api/cropService';
+import { masterDataService } from '@/lib/api/masterDataService';
 
 const cropSchema = z.object({
   farmId: z.string().min(1, { message: 'Pilih lahan' }),
@@ -55,6 +56,7 @@ interface AddCropFormProps {
 export function AddCropForm({ children, farms, initialData, onSuccess }: AddCropFormProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [cropTypes, setCropTypes] = useState<CropType[]>([]);
   const form = useForm<z.infer<typeof cropSchema>>({
     resolver: zodResolver(cropSchema),
     defaultValues: {
@@ -67,6 +69,18 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
       expectedHarvest: initialData?.expectedHarvest ? new Date(initialData.expectedHarvest) : undefined as any,
     },
   });
+
+  React.useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const types = await masterDataService.getCropTypes();
+        setCropTypes(types);
+      } catch (error) {
+        console.error('Failed to load crop types', error);
+      }
+    };
+    fetchMasterData();
+  }, []);
 
   React.useEffect(() => {
     if (open) {
@@ -164,30 +178,71 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
             <FormField
               control={form.control}
               name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nama Tanaman *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Contoh: Padi IR64" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              render={({ field }) => {
+                const uniqueNames = Array.from(new Set(cropTypes.map(c => c.name)));
+                return (
+                  <FormItem>
+                    <FormLabel>Nama Tanaman *</FormLabel>
+                    <Select onValueChange={(val) => {
+                      field.onChange(val);
+                      form.setValue('variety', ''); // Reset variety when name changes
+                    }} defaultValue={field.value || undefined}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Pilih Tanaman" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {uniqueNames.map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="variety"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Varietas</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Contoh: IR64" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const selectedName = form.watch('name');
+                  const availableVarieties = cropTypes
+                    .filter(c => c.name === selectedName && c.variety)
+                    .map(c => c.variety as string);
+                    
+                  return (
+                    <FormItem>
+                      <FormLabel>Varietas</FormLabel>
+                      {availableVarieties.length > 0 ? (
+                        <Select onValueChange={field.onChange} value={field.value || undefined}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Pilih varietas" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {availableVarieties.map((variety) => (
+                              <SelectItem key={variety} value={variety}>
+                                {variety}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <FormControl>
+                          <Input placeholder="Contoh: IR64" {...field} />
+                        </FormControl>
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
               />
               <FormField
                 control={form.control}

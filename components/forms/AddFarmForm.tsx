@@ -27,7 +27,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
-import { Farm } from '@/types';
+import { masterDataService } from '@/lib/api/masterDataService';
+import { Farm, CropType } from '@/types';
 import dynamic from 'next/dynamic';
 
 const MapPicker = dynamic(() => import('./MapPicker'), {
@@ -54,6 +55,7 @@ interface AddFarmFormProps {
 export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [cropTypes, setCropTypes] = useState<CropType[]>([]);
   const { user } = useAuth();
   const form = useForm<z.infer<typeof farmSchema>>({
     resolver: zodResolver(farmSchema),
@@ -68,6 +70,20 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
       healthScore: initialData?.healthScore || 100,
     },
   });
+
+  React.useEffect(() => {
+    const fetchMasterData = async () => {
+      try {
+        const types = await masterDataService.getCropTypes();
+        // Unique crop names for farms
+        const uniqueNames = Array.from(new Set(types.map((t) => t.name)));
+        setCropTypes(uniqueNames.map((name) => ({ id: name, name } as CropType)));
+      } catch (error) {
+        console.error('Failed to load crop types', error);
+      }
+    };
+    fetchMasterData();
+  }, []);
 
   React.useEffect(() => {
     if (open) {
@@ -231,7 +247,20 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
                   <FormItem>
                     <FormLabel>Komoditas Utama</FormLabel>
                     <FormControl>
-                      <Input placeholder="Contoh: Padi" {...field} />
+                      <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Pilih komoditas" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {cropTypes.map((crop) => (
+                            <SelectItem key={crop.name} value={crop.name}>
+                              {crop.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

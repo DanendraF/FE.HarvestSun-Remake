@@ -58,20 +58,19 @@ export default function FarmerActivitiesPage() {
       key: 'type',
       header: 'Jenis',
       render: (row: Activity) => {
-        const Icon = activityIcons[row.type] || Eye;
-        const labels: Record<string, string> = {
-          irrigation: 'Penyiraman',
-          fertilizing: 'Pemupukan',
-          harvesting: 'Panen',
-          pest_control: 'Pengendalian Hama',
-          monitoring: 'Pemantauan',
-        };
+        let Icon = Eye;
+        const lowerType = row.type.toLowerCase();
+        if (lowerType.includes('irigasi') || lowerType.includes('siram')) Icon = Droplets;
+        else if (lowerType.includes('pupuk') || lowerType.includes('tanam')) Icon = Leaf;
+        else if (lowerType.includes('panen')) Icon = Wheat;
+        else if (lowerType.includes('hama') || lowerType.includes('penyakit')) Icon = Bug;
+        
         return (
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
               <Icon className="w-4 h-4 text-emerald-500" />
             </div>
-            <span className="font-medium">{labels[row.type] || row.type}</span>
+            <span className="font-medium">{row.type}</span>
           </div>
         );
       },
