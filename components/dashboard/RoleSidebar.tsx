@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { getSidebarConfig, getRoleLabel, getRoleColor } from '@/lib/data/sidebarConfig';
@@ -23,6 +24,8 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
+  SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -38,6 +41,7 @@ interface RoleSidebarProps {
 
 export default function RoleSidebar({ role, userName }: RoleSidebarProps) {
   const pathname = usePathname();
+  const { state, setOpen } = useSidebar();
   const sections = getSidebarConfig(role);
   const roleLabel = getRoleLabel(role);
   const roleColor = getRoleColor(role);
@@ -48,8 +52,18 @@ export default function RoleSidebar({ role, userName }: RoleSidebarProps) {
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+          <SidebarMenuItem className="flex items-center">
+            <SidebarMenuButton 
+              size="lg" 
+              asChild 
+              className="flex-1 cursor-pointer"
+              onClick={(e) => {
+                if (state === 'collapsed') {
+                  e.preventDefault();
+                  setOpen(true);
+                }
+              }}
+            >
               <Link href={`/${role}/dashboard`}>
                 <div className={cn('flex aspect-square size-8 items-center justify-center rounded-lg', roleColor)}>
                   <Sprout className="size-4 text-white" />
@@ -60,6 +74,9 @@ export default function RoleSidebar({ role, userName }: RoleSidebarProps) {
                 </div>
               </Link>
             </SidebarMenuButton>
+            {state === 'expanded' && (
+              <SidebarTrigger className="hidden lg:flex ml-2 shrink-0" />
+            )}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -103,8 +120,14 @@ export default function RoleSidebar({ role, userName }: RoleSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-emerald-500 text-white">
-                <span className="text-xs font-bold">{(userName || 'U').charAt(0).toUpperCase()}</span>
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden bg-accent">
+                <Image 
+                  src="/avatars/default-avatar.svg" 
+                  alt={userName || 'User avatar'} 
+                  width={32} 
+                  height={32} 
+                  className="object-cover w-full h-full"
+                />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{userName || 'User'}</span>

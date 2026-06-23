@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import {
   Search, Bell, LogOut, User, Sun, Moon, ChevronDown
@@ -34,7 +35,7 @@ export default function TopNavbar({ title, subtitle }: TopNavbarProps) {
       <div className="flex items-center justify-between h-14 px-4 lg:px-6">
         {/* Left: Title */}
         <div className="flex items-center gap-4">
-          <SidebarTrigger />
+          <SidebarTrigger className="lg:hidden" />
           <div>
             {title && <h1 className="text-base font-semibold">{title}</h1>}
             {subtitle && <p className="text-xs text-muted-foreground hidden sm:block">{subtitle}</p>}
@@ -76,8 +77,14 @@ export default function TopNavbar({ title, subtitle }: TopNavbarProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-accent transition-colors">
-                <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">
-                  {(user?.full_name || 'U').charAt(0).toUpperCase()}
+                <div className="w-7 h-7 rounded-full overflow-hidden bg-accent shrink-0">
+                  <Image 
+                    src="/avatars/default-avatar.svg" 
+                    alt={user?.full_name || 'User avatar'} 
+                    width={28} 
+                    height={28} 
+                    className="object-cover w-full h-full"
+                  />
                 </div>
                 <span className="text-sm font-medium hidden sm:block">{user?.full_name || 'User'}</span>
                 <ChevronDown className="w-3 h-3 text-muted-foreground hidden sm:block" />
