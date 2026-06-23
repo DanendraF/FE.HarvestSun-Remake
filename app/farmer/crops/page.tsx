@@ -6,6 +6,7 @@ import DataTable from '@/components/dashboard/DataTable';
 import { Crop, Farm } from '@/types';
 import { cn } from '@/lib/utils';
 import { Sprout, Plus, Loader2, Edit2, Trash2 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { AddCropForm } from '@/components/forms/AddCropForm';
 import { cropService } from '@/lib/api/cropService';
 import { farmService } from '@/lib/api/farmService';
@@ -88,12 +89,19 @@ export default function FarmerCropsPage() {
       key: 'progress',
       header: 'Progress',
       render: (row: Crop) => (
-        <div className="flex items-center gap-2">
-          <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
-            <div className={cn('h-full rounded-full bg-emerald-500')} style={{ width: `${row.progress}%` }} />
-          </div>
-          <span className="text-xs font-medium">{row.progress}%</span>
-        </div>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex items-center gap-2 cursor-help">
+              <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
+                <div className={cn('h-full rounded-full bg-emerald-500')} style={{ width: `${row.progress}%` }} />
+              </div>
+              <span className="text-xs font-medium">{row.progress}%</span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Progress Pertumbuhan: {row.progress}%</p>
+          </TooltipContent>
+        </Tooltip>
       ),
     },
     {

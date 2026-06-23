@@ -98,7 +98,7 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{initialData ? 'Edit Aktivitas' : 'Tambah Aktivitas Baru'}</DialogTitle>
           <DialogDescription>

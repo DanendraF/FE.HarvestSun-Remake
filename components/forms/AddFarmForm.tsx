@@ -80,12 +80,16 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
       if (initialData) {
         await farmService.updateFarm(initialData.id, {
           ...values,
+          crop_type: values.cropType,
+          health_score: values.healthScore,
           userId: user.id,
         } as any);
         toast.success('Lahan berhasil diperbarui');
       } else {
         await farmService.createFarm({
           ...values,
+          crop_type: values.cropType,
+          health_score: values.healthScore,
           userId: user.id,
         } as any);
         toast.success('Lahan berhasil ditambahkan');
@@ -105,7 +109,7 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{initialData ? 'Edit Lahan' : 'Tambah Lahan Baru'}</DialogTitle>
           <DialogDescription>

@@ -6,6 +6,7 @@ import DataTable from '@/components/dashboard/DataTable';
 import { Farm } from '@/types';
 import { cn } from '@/lib/utils';
 import { MapPin, Plus, Loader2, Edit2, Trash2 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
 import dynamic from 'next/dynamic';
@@ -89,14 +90,27 @@ export default function FarmerFarmsPage() {
     {
       key: 'health_score',
       header: 'Kesehatan',
-      render: (row: Farm) => (
-        <div className="flex items-center gap-2">
-          <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
-            <div className={cn('h-full rounded-full', row.health_score >= 90 ? 'bg-emerald-500' : row.health_score >= 75 ? 'bg-amber-500' : 'bg-red-500')} style={{ width: `${row.health_score}%` }} />
-          </div>
-          <span className="text-xs font-medium">{row.health_score}%</span>
-        </div>
-      ),
+      render: (row: Farm) => {
+        const isHealthy = row.health_score >= 80;
+        const isWarning = row.health_score >= 50 && row.health_score < 80;
+        const statusText = isHealthy ? 'Sehat' : isWarning ? 'Waspada' : 'Kritis';
+        
+        return (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-2 cursor-help">
+                <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
+                  <div className={cn('h-full rounded-full', isHealthy ? 'bg-emerald-500' : isWarning ? 'bg-amber-500' : 'bg-red-500')} style={{ width: `${row.health_score}%` }} />
+                </div>
+                <span className="text-xs font-medium">{row.health_score}%</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Kesehatan: {row.health_score}% ({statusText})</p>
+            </TooltipContent>
+          </Tooltip>
+        );
+      },
     },
     {
       key: 'actions',

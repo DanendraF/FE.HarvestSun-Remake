@@ -101,7 +101,7 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{initialData ? 'Edit Tanaman' : 'Tambah Tanaman Baru'}</DialogTitle>
           <DialogDescription>
