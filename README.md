@@ -79,4 +79,9 @@ Contributions, issues, and feature requests are welcome!
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - © 2026 Danendra Farrel.
+
+## 📬 Contact & Collaboration
+
+For business inquiries or collaborations, please reach out via email:
+✉️ **adriansyahdanendra@gmail.com**
