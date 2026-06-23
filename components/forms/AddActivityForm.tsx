@@ -67,6 +67,30 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
     },
   });
 
+  React.useEffect(() => {
+    if (open) {
+      if (initialData) {
+        form.reset({
+          farmId: initialData.farm_id || '',
+          type: initialData.type as any || 'monitoring',
+          description: initialData.description || '',
+          status: initialData.status as any || 'scheduled',
+          cost: initialData.cost || 0,
+          date: initialData.date ? new Date(initialData.date) : undefined as any,
+        });
+      } else {
+        form.reset({
+          farmId: '',
+          type: 'monitoring',
+          description: '',
+          status: 'scheduled',
+          cost: 0,
+          date: undefined as any,
+        });
+      }
+    }
+  }, [open, initialData, form]);
+
   async function onSubmit(values: z.infer<typeof activitySchema>) {
     setLoading(true);
     try {

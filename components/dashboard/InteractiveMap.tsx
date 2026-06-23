@@ -81,7 +81,13 @@ export default function InteractiveMap({ farms }: InteractiveMapProps) {
               </div>
               <div>
                 <span class="text-gray-500 block text-xs">Kesehatan</span>
-                <span class="font-medium ${farm.healthScore >= 80 ? 'text-emerald-600' : 'text-amber-600'}">${farm.healthScore}%</span>
+                <span class="font-medium ${
+                  farm.healthScore >= 90 ? 'text-green-600' :
+                  farm.healthScore >= 75 ? 'text-emerald-400' :
+                  farm.healthScore >= 50 ? 'text-yellow-400' :
+                  farm.healthScore >= 25 ? 'text-orange-500' :
+                  'text-red-600'
+                }">${farm.healthScore}%</span>
               </div>
             </div>
           </div>

@@ -69,6 +69,34 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
     },
   });
 
+  React.useEffect(() => {
+    if (open) {
+      if (initialData) {
+        form.reset({
+          name: initialData.name || '',
+          location: initialData.location || '',
+          latitude: initialData.latitude || undefined,
+          longitude: initialData.longitude || undefined,
+          size: initialData.size || 1,
+          cropType: initialData.cropType || '',
+          status: initialData.status || 'active',
+          healthScore: initialData.healthScore || 100,
+        });
+      } else {
+        form.reset({
+          name: '',
+          location: '',
+          latitude: undefined,
+          longitude: undefined,
+          size: 1,
+          cropType: '',
+          status: 'active',
+          healthScore: 100,
+        });
+      }
+    }
+  }, [open, initialData, form]);
+
   async function onSubmit(values: z.infer<typeof farmSchema>) {
     if (!user) {
       toast.error('Anda harus login terlebih dahulu');

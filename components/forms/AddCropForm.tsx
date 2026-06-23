@@ -68,6 +68,32 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
     },
   });
 
+  React.useEffect(() => {
+    if (open) {
+      if (initialData) {
+        form.reset({
+          farmId: initialData.farm_id || '',
+          name: initialData.name || '',
+          variety: initialData.variety || '',
+          growthStage: initialData.growth_stage || 'Vegetatif',
+          healthStatus: initialData.health_status || 'healthy',
+          plantingDate: initialData.planting_date ? new Date(initialData.planting_date) : undefined as any,
+          expectedHarvest: initialData.expected_harvest ? new Date(initialData.expected_harvest) : undefined as any,
+        });
+      } else {
+        form.reset({
+          farmId: '',
+          name: '',
+          variety: '',
+          growthStage: 'Vegetatif',
+          healthStatus: 'healthy',
+          plantingDate: undefined as any,
+          expectedHarvest: undefined as any,
+        });
+      }
+    }
+  }, [open, initialData, form]);
+
   async function onSubmit(values: z.infer<typeof cropSchema>) {
     setLoading(true);
     try {

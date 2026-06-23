@@ -92,16 +92,32 @@ export default function FarmerFarmsPage() {
       key: 'healthScore',
       header: 'Kesehatan',
       render: (row: Farm) => {
-        const isHealthy = row.healthScore >= 80;
-        const isWarning = row.healthScore >= 50 && row.healthScore < 80;
-        const statusText = isHealthy ? 'Sehat' : isWarning ? 'Waspada' : 'Kritis';
+        let statusText = '';
+        let colorClass = '';
+        
+        if (row.healthScore >= 90) {
+          statusText = 'Sangat Sehat';
+          colorClass = 'bg-green-600';
+        } else if (row.healthScore >= 75) {
+          statusText = 'Sehat';
+          colorClass = 'bg-emerald-400';
+        } else if (row.healthScore >= 50) {
+          statusText = 'Waspada';
+          colorClass = 'bg-yellow-400';
+        } else if (row.healthScore >= 25) {
+          statusText = 'Kritis';
+          colorClass = 'bg-orange-500';
+        } else {
+          statusText = 'Sangat Kritis';
+          colorClass = 'bg-red-600';
+        }
         
         return (
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center gap-2 cursor-help">
                 <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
-                  <div className={cn('h-full rounded-full', isHealthy ? 'bg-emerald-500' : isWarning ? 'bg-amber-500' : 'bg-red-500')} style={{ width: `${row.healthScore}%` }} />
+                  <div className={cn('h-full rounded-full', colorClass)} style={{ width: `${row.healthScore}%` }} />
                 </div>
                 <span className="text-xs font-medium">{row.healthScore}%</span>
               </div>
