@@ -7,6 +7,7 @@ import { Crop, Farm } from '@/types';
 import { cn } from '@/lib/utils';
 import { Sprout, Plus, Loader2, Edit2, Trash2 } from 'lucide-react';
 import { AddCropForm } from '@/components/forms/AddCropForm';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cropService } from '@/lib/api/cropService';
 import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -135,8 +136,16 @@ export default function FarmerCropsPage() {
           </AddCropForm>
         </div>
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-10 w-64" />
+            </div>
+            <div className="space-y-2 border rounded-xl p-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
           </div>
         ) : (
           <DataTable data={crops} columns={columns} searchable searchKey="name" />

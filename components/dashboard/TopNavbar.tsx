@@ -11,6 +11,7 @@ import { useTheme } from 'next-themes';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface TopNavbarProps {
   title?: string;
@@ -32,7 +33,8 @@ export default function TopNavbar({ title, subtitle }: TopNavbarProps) {
     <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="flex items-center justify-between h-14 px-4 lg:px-6">
         {/* Left: Title */}
-        <div className="flex items-center gap-4 ml-8 lg:ml-0">
+        <div className="flex items-center gap-4">
+          <SidebarTrigger />
           <div>
             {title && <h1 className="text-base font-semibold">{title}</h1>}
             {subtitle && <p className="text-xs text-muted-foreground hidden sm:block">{subtitle}</p>}

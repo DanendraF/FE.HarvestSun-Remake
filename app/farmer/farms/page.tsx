@@ -10,6 +10,7 @@ import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
 import dynamic from 'next/dynamic';
 import { AddFarmForm } from '@/components/forms/AddFarmForm';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const InteractiveMap = dynamic(() => import('@/components/dashboard/InteractiveMap'), { 
   ssr: false,
@@ -138,8 +139,13 @@ export default function FarmerFarmsPage() {
         </div>
         
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+          <div className="space-y-4">
+            <Skeleton className="w-full h-[400px] rounded-xl" />
+            <div className="space-y-2">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
           </div>
         ) : (
           <>
