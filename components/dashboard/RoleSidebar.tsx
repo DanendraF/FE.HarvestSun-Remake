@@ -65,8 +65,14 @@ export default function RoleSidebar({ role, userName }: RoleSidebarProps) {
               }}
             >
               <Link href={`/${role}/dashboard`}>
-                <div className={cn('flex aspect-square size-8 items-center justify-center rounded-lg', roleColor)}>
-                  <Sprout className="size-4 text-white" />
+                <div className="flex aspect-square size-10 items-center justify-center rounded-lg overflow-hidden shrink-0">
+                  <Image 
+                    src="/assets/Logo_AgriLink.png"
+                    alt="AgriLink Logo"
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                  />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">HarvestSun</span>
@@ -119,17 +125,17 @@ export default function RoleSidebar({ role, userName }: RoleSidebarProps) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden bg-accent">
+            <SidebarMenuButton size="lg" className="w-full">
+              <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg overflow-hidden bg-accent">
                 <Image 
                   src="/avatars/default-avatar.svg" 
                   alt={userName || 'User avatar'} 
                   width={32} 
                   height={32} 
-                  className="object-cover w-full h-full"
+                  className="object-cover"
                 />
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-sm leading-tight min-w-0">
                 <span className="truncate font-semibold">{userName || 'User'}</span>
                 <span className="truncate text-xs text-muted-foreground">{roleLabel}</span>
               </div>
