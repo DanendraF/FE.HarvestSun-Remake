@@ -187,7 +187,7 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Tanggal *</FormLabel>
-                  <Popover>
+                  <Popover modal={true}>
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button

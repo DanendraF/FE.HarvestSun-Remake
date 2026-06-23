@@ -43,9 +43,9 @@ export interface Farm {
   latitude?: number | null;
   longitude?: number | null;
   size: number;
-  crop_type: string;
+  cropType?: string;
   status: 'active' | 'inactive' | 'harvesting';
-  health_score: number;
+  healthScore: number;
   created_at: string;
 }
 

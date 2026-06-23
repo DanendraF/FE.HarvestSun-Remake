@@ -68,7 +68,7 @@ export default function FarmerFarmsPage() {
       ),
     },
     { key: 'location', header: 'Lokasi' },
-    { key: 'crop_type', header: 'Komoditas' },
+    { key: 'cropType', header: 'Komoditas' },
     {
       key: 'size',
       header: 'Luas (ha)',
@@ -89,11 +89,11 @@ export default function FarmerFarmsPage() {
       ),
     },
     {
-      key: 'health_score',
+      key: 'healthScore',
       header: 'Kesehatan',
       render: (row: Farm) => {
-        const isHealthy = row.health_score >= 80;
-        const isWarning = row.health_score >= 50 && row.health_score < 80;
+        const isHealthy = row.healthScore >= 80;
+        const isWarning = row.healthScore >= 50 && row.healthScore < 80;
         const statusText = isHealthy ? 'Sehat' : isWarning ? 'Waspada' : 'Kritis';
         
         return (
@@ -101,13 +101,13 @@ export default function FarmerFarmsPage() {
             <TooltipTrigger asChild>
               <div className="flex items-center gap-2 cursor-help">
                 <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
-                  <div className={cn('h-full rounded-full', isHealthy ? 'bg-emerald-500' : isWarning ? 'bg-amber-500' : 'bg-red-500')} style={{ width: `${row.health_score}%` }} />
+                  <div className={cn('h-full rounded-full', isHealthy ? 'bg-emerald-500' : isWarning ? 'bg-amber-500' : 'bg-red-500')} style={{ width: `${row.healthScore}%` }} />
                 </div>
-                <span className="text-xs font-medium">{row.health_score}%</span>
+                <span className="text-xs font-medium">{row.healthScore}%</span>
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Kesehatan: {row.health_score}% ({statusText})</p>
+              <p>Kesehatan: {row.healthScore}% ({statusText})</p>
             </TooltipContent>
           </Tooltip>
         );

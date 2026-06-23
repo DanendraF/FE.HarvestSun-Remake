@@ -194,7 +194,7 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Tanggal Tanam *</FormLabel>
-                    <Popover>
+                    <Popover modal={true}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
@@ -235,7 +235,7 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Estimasi Panen</FormLabel>
-                    <Popover>
+                    <Popover modal={true}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button

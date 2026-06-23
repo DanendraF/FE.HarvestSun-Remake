@@ -69,7 +69,7 @@ export default function InteractiveMap({ farms }: InteractiveMapProps) {
             <div class="grid grid-cols-2 gap-2 text-sm">
               <div>
                 <span class="text-gray-500 block text-xs">Komoditas</span>
-                <span class="font-medium">${farm.crop_type}</span>
+                <span class="font-medium">${farm.cropType}</span>
               </div>
               <div>
                 <span class="text-gray-500 block text-xs">Luas</span>
@@ -81,7 +81,7 @@ export default function InteractiveMap({ farms }: InteractiveMapProps) {
               </div>
               <div>
                 <span class="text-gray-500 block text-xs">Kesehatan</span>
-                <span class="font-medium ${farm.health_score >= 80 ? 'text-emerald-600' : 'text-amber-600'}">${farm.health_score}%</span>
+                <span class="font-medium ${farm.healthScore >= 80 ? 'text-emerald-600' : 'text-amber-600'}">${farm.healthScore}%</span>
               </div>
             </div>
           </div>

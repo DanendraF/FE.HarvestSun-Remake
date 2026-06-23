@@ -63,9 +63,9 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
       latitude: initialData?.latitude || undefined,
       longitude: initialData?.longitude || undefined,
       size: initialData?.size || 1,
-      cropType: initialData?.crop_type || '',
+      cropType: initialData?.cropType || '',
       status: initialData?.status || 'active',
-      healthScore: initialData?.health_score || 100,
+      healthScore: initialData?.healthScore || 100,
     },
   });
 
@@ -80,16 +80,12 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
       if (initialData) {
         await farmService.updateFarm(initialData.id, {
           ...values,
-          crop_type: values.cropType,
-          health_score: values.healthScore,
           userId: user.id,
         } as any);
         toast.success('Lahan berhasil diperbarui');
       } else {
         await farmService.createFarm({
           ...values,
-          crop_type: values.cropType,
-          health_score: values.healthScore,
           userId: user.id,
         } as any);
         toast.success('Lahan berhasil ditambahkan');
