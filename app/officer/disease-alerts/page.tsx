@@ -57,7 +57,7 @@ export default function OfficerDiseaseAlertsPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-sm font-semibold">{alert.disease_name}</h4>
+                      <h4 className="text-sm font-semibold">{(alert as any).diseaseName || (alert as any).disease_name}</h4>
                       <span className={cn(
                         'text-[10px] px-2 py-0.5 rounded-full font-bold uppercase',
                         alert.severity === 'critical' ? 'bg-red-500 text-white' :
@@ -68,7 +68,7 @@ export default function OfficerDiseaseAlertsPage() {
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground mb-2">
-                      Lahan ID: {alert.farm_id} · Terdeteksi: {new Date(alert.detected_at).toLocaleDateString('id-ID')}
+                      Lahan ID: {(alert as any).farmId || (alert as any).farm_id} · Terdeteksi: {new Date((alert as any).detectedAt || (alert as any).detected_at).toLocaleDateString('id-ID')}
                     </p>
                     {alert.recommendation && (
                       <div className="flex items-start gap-2 p-2 rounded-lg bg-background/50">

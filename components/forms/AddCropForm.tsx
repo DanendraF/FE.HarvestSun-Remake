@@ -28,6 +28,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Farm, Crop, CropType } from '@/types';
@@ -155,7 +157,17 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
               name="farmId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pilih Lahan *</FormLabel>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FormLabel className="mb-0">Pilih Lahan *</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger type="button" tabIndex={-1}>
+                        <Info className="w-3 h-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Pilih lahan di mana tanaman ini akan ditanam</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -182,7 +194,17 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
                 const uniqueNames = Array.from(new Set(cropTypes.map(c => c.name)));
                 return (
                   <FormItem>
-                    <FormLabel>Nama Tanaman *</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Nama Tanaman *</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Pilih komoditas tanaman dari daftar</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <Select onValueChange={(val) => {
                       field.onChange(val);
                       form.setValue('variety', ''); // Reset variety when name changes
@@ -218,7 +240,17 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
                     
                   return (
                     <FormItem>
-                      <FormLabel>Varietas</FormLabel>
+                      <div className="flex items-center gap-2 mb-2">
+                        <FormLabel className="mb-0">Varietas</FormLabel>
+                        <Tooltip>
+                          <TooltipTrigger type="button" tabIndex={-1}>
+                            <Info className="w-3 h-3 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Pilih atau ketik varietas tanaman (opsional)</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
                       {availableVarieties.length > 0 ? (
                         <Select onValueChange={field.onChange} value={field.value || undefined}>
                           <FormControl>
@@ -249,7 +281,17 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
                 name="healthStatus"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status Kesehatan</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Status Kesehatan</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Kondisi kesehatan tanaman saat ini</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -274,7 +316,17 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
                 name="plantingDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Tanggal Tanam *</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Tanggal Tanam *</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Tanggal mulai penanaman</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <Popover modal={true}>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -315,7 +367,17 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
                 name="expectedHarvest"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Estimasi Panen</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Estimasi Panen</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Perkiraan tanggal panen (opsional)</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <Popover modal={true}>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -355,7 +417,17 @@ export function AddCropForm({ children, farms, initialData, onSuccess }: AddCrop
               name="growthStage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Fase Pertumbuhan</FormLabel>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FormLabel className="mb-0">Fase Pertumbuhan</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger type="button" tabIndex={-1}>
+                        <Info className="w-3 h-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Contoh: Vegetatif, Generatif, Panen</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <FormControl>
                     <Input placeholder="Contoh: Vegetatif" {...field} />
                   </FormControl>

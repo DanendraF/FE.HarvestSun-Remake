@@ -29,6 +29,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Farm, Activity, ActivityType } from '@/types';
@@ -150,7 +152,17 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
               name="farmId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pilih Lahan *</FormLabel>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FormLabel className="mb-0">Pilih Lahan *</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger type="button" tabIndex={-1}>
+                        <Info className="w-3 h-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Pilih lahan di mana aktivitas ini dilakukan</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -176,7 +188,17 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Jenis Aktivitas *</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Jenis Aktivitas *</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Pilih jenis aktivitas operasional yang dilakukan</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -200,7 +222,17 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Status</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Status pengerjaan aktivitas saat ini</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -224,7 +256,17 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
               name="date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Tanggal *</FormLabel>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FormLabel className="mb-0">Tanggal *</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger type="button" tabIndex={-1}>
+                        <Info className="w-3 h-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Tanggal pelaksanaan aktivitas</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <Popover modal={true}>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -263,9 +305,27 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
               name="cost"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Biaya (Rp)</FormLabel>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FormLabel className="mb-0">Biaya (Rp)</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger type="button" tabIndex={-1}>
+                        <Info className="w-3 h-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Hanya boleh berisi angka bulat (contoh: 150000)</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <FormControl>
-                    <Input type="number" min="0" {...field} />
+                    <Input 
+                      inputMode="numeric"
+                      placeholder="0"
+                      {...field} 
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/[^0-9]/g, '');
+                        field.onChange(val);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -277,7 +337,17 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Deskripsi Lengkap</FormLabel>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FormLabel className="mb-0">Deskripsi Lengkap</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger type="button" tabIndex={-1}>
+                        <Info className="w-3 h-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Catatan tambahan mengenai aktivitas ini (opsional)</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <FormControl>
                     <Textarea 
                       placeholder="Detail aktivitas yang dilakukan..." 

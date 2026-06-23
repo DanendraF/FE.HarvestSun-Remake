@@ -155,13 +155,13 @@ export default function FarmerDashboard() {
                 </div>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
                   <Sprout className="w-3 h-3" />
-                  {farm.crop_type} · {farm.size} ha
+                  {(farm as any).cropType || (farm as any).crop_type} · {farm.size} ha
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="flex-1 h-1.5 bg-accent rounded-full overflow-hidden">
-                    <div className={cn('h-full rounded-full transition-all', healthColor(farm.health_score))} style={{ width: `${farm.health_score}%` }} />
+                    <div className={cn('h-full rounded-full transition-all', healthColor((farm as any).healthScore || (farm as any).health_score))} style={{ width: `${(farm as any).healthScore || (farm as any).health_score}%` }} />
                   </div>
-                  <span className="text-xs font-medium">{farm.health_score}%</span>
+                  <span className="text-xs font-medium">{(farm as any).healthScore || (farm as any).health_score}%</span>
                 </div>
               </div>
             ))}

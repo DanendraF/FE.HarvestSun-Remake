@@ -72,8 +72,8 @@ export default function DinasDiseaseIntelligencePage() {
                   alert.severity === 'critical' ? 'bg-red-500' : alert.severity === 'high' ? 'bg-amber-500' : 'bg-blue-500'
                 )} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{alert.disease_name}</p>
-                  <p className="text-xs text-muted-foreground">Lahan {alert.farm_id}</p>
+                  <p className="text-sm font-medium">{(alert as any).diseaseName || (alert as any).disease_name}</p>
+                  <p className="text-xs text-muted-foreground">Lahan {(alert as any).farmId || (alert as any).farm_id}</p>
                 </div>
                 <span className={cn(
                   'text-xs px-2 py-1 rounded-full font-medium shrink-0',
@@ -83,7 +83,7 @@ export default function DinasDiseaseIntelligencePage() {
                 )}>
                   {alert.severity}
                 </span>
-                <span className="text-xs text-muted-foreground shrink-0">{new Date(alert.detected_at).toLocaleDateString('id-ID')}</span>
+                <span className="text-xs text-muted-foreground shrink-0">{new Date((alert as any).detectedAt || (alert as any).detected_at).toLocaleDateString('id-ID')}</span>
               </div>
             ))}
           </div>

@@ -49,9 +49,9 @@ export default function OfficerFarmsPage() {
       render: (row: Farm) => (
         <div className="flex items-center gap-2">
           <div className="flex-1 h-1.5 w-16 bg-accent rounded-full overflow-hidden">
-            <div className={cn('h-full rounded-full', row.health_score >= 90 ? 'bg-emerald-500' : row.health_score >= 75 ? 'bg-amber-500' : 'bg-red-500')} style={{ width: `${row.health_score}%` }} />
+            <div className={cn('h-full rounded-full', (row as any).healthScore >= 90 || (row as any).health_score >= 90 ? 'bg-emerald-500' : (row as any).healthScore >= 75 || (row as any).health_score >= 75 ? 'bg-amber-500' : 'bg-red-500')} style={{ width: `${(row as any).healthScore || (row as any).health_score}%` }} />
           </div>
-          <span className="text-xs font-medium">{row.health_score}%</span>
+          <span className="text-xs font-medium">{(row as any).healthScore || (row as any).health_score}%</span>
         </div>
       ),
     },
@@ -80,7 +80,7 @@ export default function OfficerFarmsPage() {
               <Sprout className="w-4 h-4 text-amber-500" />
               <span className="text-xs text-muted-foreground">Rata-rata Kesehatan</span>
             </div>
-            <p className="text-2xl font-bold">{Math.round(mockFarms.reduce((acc, f) => acc + f.health_score, 0) / mockFarms.length)}%</p>
+            <p className="text-2xl font-bold">{Math.round(mockFarms.reduce((acc, f) => acc + ((f as any).healthScore || (f as any).health_score), 0) / mockFarms.length)}%</p>
           </div>
         </div>
         <DataTable data={mockFarms} columns={columns} searchable searchKey="name" />

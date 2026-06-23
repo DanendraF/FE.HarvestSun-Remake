@@ -24,6 +24,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info } from 'lucide-react';
 import { toast } from 'sonner';
 import { farmService } from '@/lib/api/farmService';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -165,7 +167,17 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nama Lahan *</FormLabel>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FormLabel className="mb-0">Nama Lahan *</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger type="button" tabIndex={-1}>
+                        <Info className="w-3 h-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Masukkan nama identifikasi lahan (minimal 2 karakter)</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <FormControl>
                     <Input placeholder="Contoh: Lahan Padi A1" {...field} />
                   </FormControl>
@@ -178,7 +190,17 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
               name="location"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Lokasi / Alamat</FormLabel>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FormLabel className="mb-0">Lokasi / Alamat</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger type="button" tabIndex={-1}>
+                        <Info className="w-3 h-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Masukkan alamat lengkap atau detail lokasi lahan</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <FormControl>
                     <Input placeholder="Desa Sumber Makmur, Kec. Godean" {...field} />
                   </FormControl>
@@ -188,7 +210,17 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
             />
             
             <div className="space-y-2">
-              <FormLabel>Pilih Titik di Peta</FormLabel>
+              <div className="flex items-center gap-2 mb-2">
+                <FormLabel className="mb-0">Pilih Titik di Peta</FormLabel>
+                <Tooltip>
+                  <TooltipTrigger type="button" tabIndex={-1}>
+                    <Info className="w-3 h-3 text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Geser peta atau klik pada peta untuk menentukan koordinat lahan</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <MapPicker 
                 onLocationSelect={(lat, lng) => {
                   form.setValue('latitude', lat, { shouldValidate: true });
@@ -208,9 +240,27 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
                 name="size"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Luas (Hektar) *</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Luas (Hektar) *</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Hanya boleh berisi angka atau desimal (contoh: 1.5)</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <FormControl>
-                      <Input type="number" step="0.1" {...field} />
+                      <Input 
+                        inputMode="decimal"
+                        placeholder="Contoh: 1.5"
+                        {...field}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9.]/g, '');
+                          field.onChange(val);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -221,7 +271,17 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Status</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Status</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Pilih status operasional lahan saat ini</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
@@ -245,7 +305,17 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
                 name="cropType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Komoditas Utama</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Komoditas Utama</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Pilih komoditas utama yang sedang ditanam di lahan ini</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                         <FormControl>
@@ -271,9 +341,27 @@ export function AddFarmForm({ children, initialData, onSuccess }: AddFarmFormPro
                 name="healthScore"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Skor Kesehatan (0-100)</FormLabel>
+                    <div className="flex items-center gap-2 mb-2">
+                      <FormLabel className="mb-0">Skor Kesehatan (0-100)</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger type="button" tabIndex={-1}>
+                          <Info className="w-3 h-3 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Hanya boleh berisi angka bulat dari 0 hingga 100</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <FormControl>
-                      <Input type="number" min="0" max="100" {...field} />
+                      <Input 
+                        inputMode="numeric"
+                        placeholder="100"
+                        {...field}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          field.onChange(val);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
