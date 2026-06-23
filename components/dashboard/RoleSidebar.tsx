@@ -46,17 +46,17 @@ export default function RoleSidebar({ role, userName }: RoleSidebarProps) {
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
-      <SidebarHeader className="border-b border-border h-14 flex items-center justify-center">
+      <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href={`/${role}/dashboard`} className="flex items-center gap-2">
-                <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center shrink-0', roleColor)}>
-                  <Sprout className="w-5 h-5 text-white" />
+              <Link href={`/${role}/dashboard`}>
+                <div className={cn('flex aspect-square size-8 items-center justify-center rounded-lg', roleColor)}>
+                  <Sprout className="size-4 text-white" />
                 </div>
-                <div className="flex flex-col min-w-0 flex-1">
-                  <span className="text-sm font-semibold truncate">HarvestSun</span>
-                  <span className="text-[10px] text-muted-foreground truncate">{roleLabel}</span>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">HarvestSun</span>
+                  <span className="truncate text-xs text-muted-foreground">{roleLabel}</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -99,16 +99,16 @@ export default function RoleSidebar({ role, userName }: RoleSidebarProps) {
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-border">
+      <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg">
-              <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                {(userName || 'U').charAt(0).toUpperCase()}
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-emerald-500 text-white">
+                <span className="text-xs font-bold">{(userName || 'U').charAt(0).toUpperCase()}</span>
               </div>
-              <div className="flex flex-col min-w-0 flex-1 ml-2">
-                <span className="text-sm font-medium truncate">{userName || 'User'}</span>
-                <span className="text-[10px] text-muted-foreground truncate">{roleLabel}</span>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">{userName || 'User'}</span>
+                <span className="truncate text-xs text-muted-foreground">{roleLabel}</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
