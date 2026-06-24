@@ -7,6 +7,10 @@ export interface User {
   role: UserRole;
   avatar_url?: string;
   created_at: string;
+  farmerProfile?: any;
+  officerProfile?: any;
+  farms?: any[];
+  activities?: any[];
 }
 
 export interface SidebarItem {

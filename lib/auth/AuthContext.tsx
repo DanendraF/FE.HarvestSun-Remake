@@ -9,6 +9,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null; user?: User }>;
   signUp: (email: string, password: string, fullName: string, role: UserRole, profileData?: any) => Promise<{ error: Error | null; user?: User }>;
   signOut: () => Promise<void>;
+  updateProfile: (data: any) => Promise<{ error: Error | null; user?: User }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -119,6 +120,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateProfile = async (profileData: any) => {
+    if (!user) return { error: new Error('User not logged in') };
+    try {
+      const token = localStorage.getItem(TOKEN_KEY);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Terjadi kesalahan saat memperbarui profil');
+      }
+
+      const updatedUser = await response.json();
+      
+      // Merge to handle if backend doesn't return full nested objects right away
+      const newUserObj = { ...user, ...updatedUser };
+      
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newUserObj));
+      setUser(newUserObj);
+
+      return { error: null, user: newUserObj };
+    } catch (err: any) {
+      return { 
+        error: err instanceof Error ? err : new Error(err.message || 'Terjadi kesalahan saat memperbarui profil'),
+      };
+    }
+  };
+
   const signOut = async () => {
     setUser(null);
     localStorage.removeItem(STORAGE_KEY);
@@ -126,7 +161,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

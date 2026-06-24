@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import {
   Search, Bell, LogOut, User, Sun, Moon, ChevronDown
@@ -13,6 +14,17 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface TopNavbarProps {
   title?: string;
@@ -24,6 +36,7 @@ export default function TopNavbar({ title, subtitle }: TopNavbarProps) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [searchFocused, setSearchFocused] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -79,7 +92,7 @@ export default function TopNavbar({ title, subtitle }: TopNavbarProps) {
               <button className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-accent transition-colors">
                 <div className="w-7 h-7 rounded-full overflow-hidden bg-accent shrink-0">
                   <Image 
-                    src="/avatars/default-avatar.svg" 
+                    src={user?.avatar_url || '/avatars/default-avatar.svg'} 
                     alt={user?.full_name || 'User avatar'} 
                     width={28} 
                     height={28} 
@@ -91,11 +104,13 @@ export default function TopNavbar({ title, subtitle }: TopNavbarProps) {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem className="gap-2">
-                <User className="w-4 h-4" />
-                Profil
+              <DropdownMenuItem asChild className="gap-2 cursor-pointer">
+                <Link href={`/${user?.role || 'farmer'}/profile`}>
+                  <User className="w-4 h-4" />
+                  Profil
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2" onClick={handleSignOut}>
+              <DropdownMenuItem className="gap-2 text-red-500 focus:text-red-500 cursor-pointer" onClick={() => setShowLogoutDialog(true)}>
                 <LogOut className="w-4 h-4" />
                 Keluar
               </DropdownMenuItem>
@@ -103,6 +118,23 @@ export default function TopNavbar({ title, subtitle }: TopNavbarProps) {
           </DropdownMenu>
         </div>
       </div>
+
+      <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Keluar</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin keluar dari akun ini? Sesi Anda akan diakhiri dan Anda perlu login kembali.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleSignOut} className="bg-red-500 hover:bg-red-600 text-white">
+              Ya, Keluar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </header>
   );
 }

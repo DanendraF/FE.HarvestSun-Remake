@@ -125,7 +125,7 @@ export function getSidebarConfig(role: UserRole): SidebarSection[] {
 
 export function getRoleLabel(role: UserRole): string {
   switch (role) {
-    case 'farmer': return 'Konsultan Tani';
+    case 'farmer': return 'Petani';
     case 'officer': return 'Penyuluh';
     case 'dinas': return 'Dinas Pertanian';
     case 'admin': return 'Administrator';
