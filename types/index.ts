@@ -65,11 +65,12 @@ export interface Activity {
   id: string;
   farmId: string;
   userId: string;
-  type: 'irrigation' | 'fertilizing' | 'harvesting' | 'pest_control' | 'monitoring';
+  type: 'irrigation' | 'fertilizing' | 'harvesting' | 'pest_control' | 'monitoring' | string;
   description: string;
   date: string;
   status: 'completed' | 'scheduled' | 'in_progress';
   cost?: number;
+  farm?: Farm;
 }
 
 export interface DiseaseAlert {
