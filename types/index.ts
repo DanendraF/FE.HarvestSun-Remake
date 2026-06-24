@@ -88,6 +88,8 @@ export interface FarmerProfile {
   user_id: string;
   full_name: string;
   phone: string;
+  regency?: string;
+  district?: string;
   location: string;
   farm_count: number;
   total_land: number;

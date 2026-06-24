@@ -2,8 +2,9 @@ import { fetchWithAuth } from './client';
 
 export interface OnboardingData {
   phone: string;
-  location: string;
+  regency: string;
   district: string;
+  location: string;
 }
 
 export const authService = {
