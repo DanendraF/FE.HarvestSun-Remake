@@ -67,10 +67,11 @@ export const mockFarmers: FarmerProfile[] = [
 ];
 
 export const mockOfficers: OfficerProfile[] = [
-  { id: '1', user_id: 'o1', full_name: 'Dr. Rina Susanti', region: 'Kec. Tani Makmur', farmers_count: 45, farms_monitored: 120, performance_score: 94, status: 'active' },
-  { id: '2', user_id: 'o2', full_name: 'Ir. Bambang Hartono', region: 'Kec. Tani Jaya', farmers_count: 38, farms_monitored: 95, performance_score: 89, status: 'active' },
-  { id: '3', user_id: 'o3', full_name: 'MSc. Andi Wijaya', region: 'Kec. Tani Baru', farmers_count: 52, farms_monitored: 145, performance_score: 91, status: 'active' },
-  { id: '4', user_id: 'o4', full_name: 'Dr. Sari Dewi', region: 'Kec. Tani Sejahtera', farmers_count: 21, farms_monitored: 63, performance_score: 87, status: 'active' },
+  { id: '1', user_id: 'u1', full_name: 'Budi Santoso', region: 'Kec. Bantul, Kab. Bantul', farmers_count: 24, farms_monitored: 36, performance_score: 92, status: 'active' },
+  { id: '2', user_id: 'u2', full_name: 'Siti Rahma', region: 'Kec. Sleman, Kab. Sleman', farmers_count: 18, farms_monitored: 22, performance_score: 88, status: 'active' },
+  { id: '3', user_id: 'u3', full_name: 'Ahmad Yani', region: 'Kec. Wonosari, Kab. Gunungkidul', farmers_count: 31, farms_monitored: 45, performance_score: 95, status: 'active' },
+  { id: '4', user_id: 'u4', full_name: 'Dewi Lestari', region: 'Kec. Wates, Kab. Kulon Progo', farmers_count: 15, farms_monitored: 18, performance_score: 75, status: 'inactive' },
+  { id: '5', user_id: 'u5', full_name: 'Hendra Saputra', region: '', farmers_count: 0, farms_monitored: 0, performance_score: 0, status: 'inactive' },
 ];
 
 export const mockRegionalData: RegionalData[] = [
