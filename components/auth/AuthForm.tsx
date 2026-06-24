@@ -59,7 +59,11 @@ export default function AuthForm({ mode, onSwitchMode, onSuccess, isMobile }: Au
       setError(error.message || 'Gagal mendaftar.');
     } else if (user) {
       onSuccess?.();
-      router.push(ROLE_ROUTES[user.role]);
+      if (user.role === 'farmer') {
+        router.push('/onboarding');
+      } else {
+        router.push(ROLE_ROUTES[user.role]);
+      }
     }
     setLoading(false);
   };
