@@ -41,8 +41,8 @@ export default function OfficerFarmsPage() {
         </div>
       ),
     },
-    { key: 'location', header: 'Lokasi' },
-    { key: 'crop_type', header: 'Komoditas' },
+    { key: 'location', header: 'Lokasi', render: (row: Farm) => <span>{row.location || '-'}</span> },
+    { key: 'cropType', header: 'Komoditas', render: (row: Farm) => <span>{row.cropType || '-'}</span> },
     {
       key: 'size',
       header: 'Luas (ha)',
