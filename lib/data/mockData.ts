@@ -29,33 +29,33 @@ export const adminKPIs: KPIData[] = [
 ];
 
 export const mockFarms: Farm[] = [
-  { id: '1', name: 'Lahan Padi A1', location: 'Sleman, DI Yogyakarta', size: 2.5, crop_type: 'Padi', status: 'active', health_score: 92, created_at: '2024-01-15', latitude: -7.7450, longitude: 110.3600 },
-  { id: '2', name: 'Lahan Jagung B2', location: 'Bantul, DI Yogyakarta', size: 1.8, crop_type: 'Jagung', status: 'active', health_score: 85, created_at: '2024-02-20', latitude: -7.8800, longitude: 110.3350 },
-  { id: '3', name: 'Lahan Sayur C3', location: 'Gunung Kidul, DI Yogyakarta', size: 0.5, crop_type: 'Cabai', status: 'harvesting', health_score: 78, created_at: '2024-03-10', latitude: -7.9800, longitude: 110.5880 },
-  { id: '4', name: 'Lahan Padi D4', location: 'Kulon Progo, DI Yogyakarta', size: 3.0, crop_type: 'Padi', status: 'active', health_score: 95, created_at: '2024-01-20', latitude: -7.8450, longitude: 110.1520 },
-  { id: '5', name: 'Lahan Kedelai E5', location: 'Kota Yogyakarta', size: 1.2, crop_type: 'Kedelai', status: 'inactive', health_score: 60, created_at: '2024-04-05', latitude: -7.7950, longitude: 110.3695 },
+  { id: '1', name: 'Lahan Padi A1', location: 'Sleman, DI Yogyakarta', size: 2.5, cropType: 'Padi', status: 'active', healthScore: 92, created_at: '2024-01-15', latitude: -7.7450, longitude: 110.3600 },
+  { id: '2', name: 'Lahan Jagung B2', location: 'Bantul, DI Yogyakarta', size: 1.8, cropType: 'Jagung', status: 'active', healthScore: 85, created_at: '2024-02-20', latitude: -7.8800, longitude: 110.3350 },
+  { id: '3', name: 'Lahan Sayur C3', location: 'Gunung Kidul, DI Yogyakarta', size: 0.5, cropType: 'Cabai', status: 'harvesting', healthScore: 78, created_at: '2024-03-10', latitude: -7.9800, longitude: 110.5880 },
+  { id: '4', name: 'Lahan Padi D4', location: 'Kulon Progo, DI Yogyakarta', size: 3.0, cropType: 'Padi', status: 'active', healthScore: 95, created_at: '2024-01-20', latitude: -7.8450, longitude: 110.1520 },
+  { id: '5', name: 'Lahan Kedelai E5', location: 'Kota Yogyakarta', size: 1.2, cropType: 'Kedelai', status: 'inactive', healthScore: 60, created_at: '2024-04-05', latitude: -7.7950, longitude: 110.3695 },
 ];
 
 export const mockCrops: Crop[] = [
-  { id: '1', farm_id: '1', name: 'Padi IR64', variety: 'IR64', planting_date: '2024-01-15', expected_harvest: '2024-04-20', growth_stage: 'Vegetatif', health_status: 'healthy', progress: 65 },
-  { id: '2', farm_id: '2', name: 'Jagung Hibrida Bisi-2', variety: 'Bisi-2', planting_date: '2024-02-20', expected_harvest: '2024-05-25', growth_stage: 'Generatif', health_status: 'healthy', progress: 78 },
-  { id: '3', farm_id: '3', name: 'Cabai Rawit', variety: 'Lokal', planting_date: '2024-03-10', expected_harvest: '2024-06-15', growth_stage: 'Pematangan', health_status: 'warning', progress: 90 },
-  { id: '4', farm_id: '4', name: 'Padi Ciherang', variety: 'Ciherang', planting_date: '2024-01-20', expected_harvest: '2024-04-25', growth_stage: 'Vegetatif', health_status: 'healthy', progress: 70 },
-  { id: '5', farm_id: '5', name: 'Kedelai Anjasmoro', variety: 'Anjasmoro', planting_date: '2024-04-05', expected_harvest: '2024-07-10', growth_stage: 'Pertumbuhan', health_status: 'critical', progress: 25 },
+  { id: '1', farmId: '1', name: 'Padi IR64', variety: 'IR64', plantingDate: '2024-01-15', expectedHarvest: '2024-04-20', growthStage: 'Vegetatif', healthStatus: 'healthy', progress: 65 },
+  { id: '2', farmId: '2', name: 'Jagung Hibrida Bisi-2', variety: 'Bisi-2', plantingDate: '2024-02-20', expectedHarvest: '2024-05-25', growthStage: 'Generatif', healthStatus: 'healthy', progress: 78 },
+  { id: '3', farmId: '3', name: 'Cabai Rawit', variety: 'Lokal', plantingDate: '2024-03-10', expectedHarvest: '2024-06-15', growthStage: 'Pematangan', healthStatus: 'warning', progress: 90 },
+  { id: '4', farmId: '4', name: 'Padi Ciherang', variety: 'Ciherang', plantingDate: '2024-01-20', expectedHarvest: '2024-04-25', growthStage: 'Vegetatif', healthStatus: 'healthy', progress: 70 },
+  { id: '5', farmId: '5', name: 'Kedelai Anjasmoro', variety: 'Anjasmoro', plantingDate: '2024-04-05', expectedHarvest: '2024-07-10', growthStage: 'Pertumbuhan', healthStatus: 'critical', progress: 25 },
 ];
 
 export const mockActivities: Activity[] = [
-  { id: '1', farm_id: '1', type: 'irrigation', description: 'Penyiraman rutin pagi', date: '2024-03-20', status: 'completed', cost: 0 },
-  { id: '2', farm_id: '1', type: 'fertilizing', description: 'Pemupukan NPK fase vegetatif', date: '2024-03-18', status: 'completed', cost: 250000 },
-  { id: '3', farm_id: '2', type: 'monitoring', description: 'Pemantauan pertumbuhan jagung', date: '2024-03-21', status: 'in_progress', cost: 0 },
-  { id: '4', farm_id: '3', type: 'pest_control', description: 'Penyemprotan pestisida organik', date: '2024-03-19', status: 'completed', cost: 180000 },
-  { id: '5', farm_id: '4', type: 'irrigation', description: 'Penyiraman sore', date: '2024-03-21', status: 'scheduled', cost: 0 },
+  { id: '1', farmId: '1', type: 'irrigation', description: 'Penyiraman rutin pagi', date: '2024-03-20', status: 'completed', cost: 0 },
+  { id: '2', farmId: '1', type: 'fertilizing', description: 'Pemupukan NPK fase vegetatif', date: '2024-03-18', status: 'completed', cost: 250000 },
+  { id: '3', farmId: '2', type: 'monitoring', description: 'Pemantauan pertumbuhan jagung', date: '2024-03-21', status: 'in_progress', cost: 0 },
+  { id: '4', farmId: '3', type: 'pest_control', description: 'Penyemprotan pestisida organik', date: '2024-03-19', status: 'completed', cost: 180000 },
+  { id: '5', farmId: '4', type: 'irrigation', description: 'Penyiraman sore', date: '2024-03-21', status: 'scheduled', cost: 0 },
 ];
 
 export const mockDiseaseAlerts: DiseaseAlert[] = [
-  { id: '1', farm_id: '3', disease_name: 'Virus Keriting Daun Cabai', severity: 'high', detected_at: '2024-03-18', status: 'active', recommendation: 'Lakukan pemangkasan daun terinfeksi dan semprot insektisida' },
-  { id: '2', farm_id: '5', disease_name: 'Busuk Akar Kedelai', severity: 'critical', detected_at: '2024-03-15', status: 'active', recommendation: 'Perbaiki drainase dan aplikasikan fungisida' },
-  { id: '3', farm_id: '2', disease_name: 'Ulat Grayak Jagung', severity: 'medium', detected_at: '2024-03-10', status: 'resolved', recommendation: 'Pantau populasi ulat dan terapkan pengendalian hayati' },
+  { id: '1', farmId: '3', diseaseName: 'Virus Keriting Daun Cabai', severity: 'high', detectedAt: '2024-03-18', status: 'active', recommendation: 'Lakukan pemangkasan daun terinfeksi dan semprot insektisida' },
+  { id: '2', farmId: '5', diseaseName: 'Busuk Akar Kedelai', severity: 'critical', detectedAt: '2024-03-15', status: 'active', recommendation: 'Perbaiki drainase dan aplikasikan fungisida' },
+  { id: '3', farmId: '2', diseaseName: 'Ulat Grayak Jagung', severity: 'medium', detectedAt: '2024-03-10', status: 'resolved', recommendation: 'Pantau populasi ulat dan terapkan pengendalian hayati' },
 ];
 
 export const mockFarmers: FarmerProfile[] = [

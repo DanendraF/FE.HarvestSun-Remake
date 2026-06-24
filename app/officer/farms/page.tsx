@@ -3,12 +3,31 @@
 import React from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import DataTable from '@/components/dashboard/DataTable';
-import { mockFarms } from '@/lib/data/mockData';
+import { farmService } from '@/lib/api/farmService';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Farm } from '@/types';
 import { cn } from '@/lib/utils';
 import { MapPin, Sprout } from 'lucide-react';
 
 export default function OfficerFarmsPage() {
+  const [farms, setFarms] = React.useState<Farm[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchFarms = async () => {
+      try {
+        setLoading(true);
+        // Getting all farms (no userId specified)
+        const data = await farmService.getFarms();
+        setFarms(data);
+      } catch (error) {
+        console.error('Failed to fetch farms:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFarms();
+  }, []);
   const columns = [
     {
       key: 'name',
@@ -66,24 +85,35 @@ export default function OfficerFarmsPage() {
               <MapPin className="w-4 h-4 text-blue-500" />
               <span className="text-xs text-muted-foreground">Total Lahan</span>
             </div>
-            <p className="text-2xl font-bold">{mockFarms.length}</p>
+            <p className="text-2xl font-bold">{farms.length}</p>
           </div>
           <div className="p-4 rounded-xl border border-border bg-card">
             <div className="flex items-center gap-2 mb-2">
               <Sprout className="w-4 h-4 text-emerald-500" />
               <span className="text-xs text-muted-foreground">Luas Total</span>
             </div>
-            <p className="text-2xl font-bold">{mockFarms.reduce((acc, f) => acc + f.size, 0).toFixed(1)} ha</p>
+            <p className="text-2xl font-bold">{farms.reduce((acc, f) => acc + f.size, 0).toFixed(1)} ha</p>
           </div>
           <div className="p-4 rounded-xl border border-border bg-card">
             <div className="flex items-center gap-2 mb-2">
               <Sprout className="w-4 h-4 text-amber-500" />
               <span className="text-xs text-muted-foreground">Rata-rata Kesehatan</span>
             </div>
-            <p className="text-2xl font-bold">{Math.round(mockFarms.reduce((acc, f) => acc + ((f as any).healthScore || (f as any).health_score), 0) / mockFarms.length)}%</p>
+            <p className="text-2xl font-bold">{farms.length > 0 ? Math.round(farms.reduce((acc, f) => acc + ((f as any).healthScore || (f as any).health_score || 0), 0) / farms.length) : 0}%</p>
           </div>
         </div>
-        <DataTable data={mockFarms} columns={columns} searchable searchKey="name" />
+
+        {loading ? (
+          <div className="space-y-4">
+            <div className="space-y-2 border rounded-xl p-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          </div>
+        ) : (
+          <DataTable data={farms} columns={columns} searchable searchKey="name" />
+        )}
       </div>
     </DashboardLayout>
   );
