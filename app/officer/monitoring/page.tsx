@@ -174,8 +174,10 @@ export default function OfficerMonitoringPage() {
                         )}>
                           {activity.status === 'completed' ? 'Selesai' : activity.status === 'in_progress' ? 'Berjalan' : 'Terjadwal'}
                         </span>
-                        {(typeof activity.cost === 'number' && activity.cost > 0) ? (
-                          <span className="text-[10px] text-muted-foreground">Rp. {activity.cost.toLocaleString('id-ID')}</span>
+                        {typeof activity.cost === 'number' ? (
+                          <span className="text-[10px] text-muted-foreground">
+                            {activity.cost === 0 ? 'Rp. 0-' : `Rp. ${activity.cost.toLocaleString('id-ID')}`}
+                          </span>
                         ) : null}
                         {activity.farm?.location && (
                           <span className="text-[10px] text-muted-foreground flex items-center gap-1">
