@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null; user?: User }>;
-  signUp: (email: string, password: string, fullName: string, role: UserRole) => Promise<{ error: Error | null; user?: User }>;
+  signUp: (email: string, password: string, fullName: string, role: UserRole, profileData?: any) => Promise<{ error: Error | null; user?: User }>;
   signOut: () => Promise<void>;
 }
 
@@ -89,14 +89,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string, role: UserRole) => {
+  const signUp = async (email: string, password: string, fullName: string, role: UserRole, profileData?: any) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, fullName, role }),
+        body: JSON.stringify({ email, password, fullName, role, profileData }),
       });
 
       const data = await response.json();

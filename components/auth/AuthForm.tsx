@@ -54,16 +54,22 @@ export default function AuthForm({ mode, onSwitchMode, onSuccess, isMobile }: Au
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    if (role === 'farmer') {
+      // For farmer, delay actual signUp until onboarding is complete
+      sessionStorage.setItem('pending_registration', JSON.stringify({ email, password, fullName, role }));
+      onSuccess?.();
+      router.push('/onboarding');
+      setLoading(false);
+      return;
+    }
+
     const { error, user } = await signUp(email, password, fullName, role);
     if (error) {
       setError(error.message || 'Gagal mendaftar.');
     } else if (user) {
       onSuccess?.();
-      if (user.role === 'farmer') {
-        router.push('/onboarding');
-      } else {
-        router.push(ROLE_ROUTES[user.role]);
-      }
+      router.push(ROLE_ROUTES[user.role]);
     }
     setLoading(false);
   };

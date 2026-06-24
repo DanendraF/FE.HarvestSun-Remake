@@ -1,30 +1,54 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { Leaf, MapPin, Phone } from 'lucide-react';
-import { authService } from '@/lib/api/authService';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { signUp } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     phone: '',
     district: '',
     location: '',
   });
 
+  useEffect(() => {
+    // Redirect if they came here without registering
+    const pendingData = sessionStorage.getItem('pending_registration');
+    if (!pendingData) {
+      router.replace('/login');
+    }
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
 
     try {
-      await authService.completeFarmerProfile(formData);
-      // Pindahkan ke dashboard setelah berhasil
-      router.push('/farmer/dashboard');
-    } catch (error) {
-      console.error(error);
+      const pendingStr = sessionStorage.getItem('pending_registration');
+      if (!pendingStr) throw new Error('Data registrasi tidak ditemukan. Silakan ulangi.');
+      
+      const { email, password, fullName, role } = JSON.parse(pendingStr);
+      
+      // Call actual signUp with the profile data
+      const { error: signUpError, user } = await signUp(email, password, fullName, role, formData);
+      
+      if (signUpError) {
+        throw signUpError;
+      }
+      
+      if (user) {
+        sessionStorage.removeItem('pending_registration');
+        router.push('/farmer/dashboard');
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Terjadi kesalahan saat menyimpan profil');
     } finally {
       setLoading(false);
     }
@@ -119,11 +143,17 @@ export default function OnboardingPage() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
-            >
+            <div className="pt-2">
+              {error && (
+                <div className="mb-4 text-xs px-3 py-2.5 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                  {error}
+                </div>
+              )}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.98]"
+              >
               {loading ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -136,6 +166,7 @@ export default function OnboardingPage() {
                 'Selesai & Masuk Dashboard'
               )}
             </button>
+            </div>
           </form>
         </div>
       </div>
