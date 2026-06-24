@@ -11,6 +11,7 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     phone: '',
+    district: '',
     location: '',
   });
 
@@ -72,8 +73,33 @@ export default function OnboardingPage() {
               </div>
 
               <div>
+                <label htmlFor="district" className="block text-sm font-medium text-slate-700 mb-1">
+                  Kecamatan
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <MapPin className="h-5 w-5 text-slate-400" />
+                  </div>
+                  <select
+                    id="district"
+                    name="district"
+                    required
+                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 text-slate-900 transition-colors appearance-none"
+                    value={formData.district}
+                    onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                  >
+                    <option value="" disabled>Pilih Kecamatan</option>
+                    <option value="Kecamatan A">Kecamatan A</option>
+                    <option value="Kecamatan B">Kecamatan B</option>
+                    <option value="Kecamatan C">Kecamatan C</option>
+                    <option value="Kecamatan D">Kecamatan D</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
                 <label htmlFor="location" className="block text-sm font-medium text-slate-700 mb-1">
-                  Alamat / Lokasi Lahan Utama
+                  Detail Alamat Lahan
                 </label>
                 <div className="relative">
                   <div className="absolute top-3 left-3 flex items-start pointer-events-none">
@@ -85,7 +111,7 @@ export default function OnboardingPage() {
                     rows={3}
                     required
                     className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 text-slate-900 placeholder:text-slate-400 transition-colors resize-none"
-                    placeholder="Masukkan nama desa, kecamatan, atau patokan lokasi lahan Anda"
+                    placeholder="Masukkan nama desa, patokan, atau alamat lengkap lahan Anda"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   />
