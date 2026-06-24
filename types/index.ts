@@ -64,6 +64,7 @@ export interface Crop {
 export interface Activity {
   id: string;
   farmId: string;
+  userId: string;
   type: 'irrigation' | 'fertilizing' | 'harvesting' | 'pest_control' | 'monitoring';
   description: string;
   date: string;

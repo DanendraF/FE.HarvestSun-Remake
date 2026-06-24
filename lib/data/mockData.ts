@@ -45,11 +45,11 @@ export const mockCrops: Crop[] = [
 ];
 
 export const mockActivities: Activity[] = [
-  { id: '1', farmId: '1', type: 'irrigation', description: 'Penyiraman rutin pagi', date: '2024-03-20', status: 'completed', cost: 0 },
-  { id: '2', farmId: '1', type: 'fertilizing', description: 'Pemupukan NPK fase vegetatif', date: '2024-03-18', status: 'completed', cost: 250000 },
-  { id: '3', farmId: '2', type: 'monitoring', description: 'Pemantauan pertumbuhan jagung', date: '2024-03-21', status: 'in_progress', cost: 0 },
-  { id: '4', farmId: '3', type: 'pest_control', description: 'Penyemprotan pestisida organik', date: '2024-03-19', status: 'completed', cost: 180000 },
-  { id: '5', farmId: '4', type: 'irrigation', description: 'Penyiraman sore', date: '2024-03-21', status: 'scheduled', cost: 0 },
+  { id: '1', farmId: '1', userId: 'user-1', type: 'irrigation', description: 'Penyiraman rutin pagi', date: '2024-03-20', status: 'completed', cost: 0 },
+  { id: '2', farmId: '1', userId: 'user-1', type: 'fertilizing', description: 'Pemupukan NPK fase vegetatif', date: '2024-03-18', status: 'completed', cost: 250000 },
+  { id: '3', farmId: '2', userId: 'user-2', type: 'monitoring', description: 'Pemantauan pertumbuhan jagung', date: '2024-03-21', status: 'in_progress', cost: 0 },
+  { id: '4', farmId: '3', userId: 'user-3', type: 'pest_control', description: 'Penyemprotan pestisida organik', date: '2024-03-19', status: 'completed', cost: 180000 },
+  { id: '5', farmId: '4', userId: 'user-4', type: 'irrigation', description: 'Penyiraman sore', date: '2024-03-21', status: 'scheduled', cost: 0 },
 ];
 
 export const mockDiseaseAlerts: DiseaseAlert[] = [

@@ -15,6 +15,7 @@ erDiagram
     officer_profiles ||--o{ officer_farmer_assignments : "supervises"
     farms ||--o{ crops : "grows"
     farms ||--o{ activities : "tracks"
+    users ||--o{ activities : "records"
     farms ||--o{ disease_alerts : "reports"
     
     users {
@@ -77,6 +78,7 @@ erDiagram
     activities {
         uuid id PK
         uuid farm_id FK
+        uuid user_id FK "recorded by"
         varchar type "irrigation | fertilizing | harvesting | pest_control | monitoring"
         text description
         date date
@@ -214,6 +216,7 @@ create table public.crops (
 create table public.activities (
     id uuid default uuid_generate_v4() primary key,
     farm_id uuid references public.farms(id) on delete cascade not null,
+    user_id uuid references public.users(id) on delete cascade not null,
     type varchar(50) not null check (type in ('irrigation', 'fertilizing', 'harvesting', 'pest_control', 'monitoring')),
     description text,
     date date not null,
