@@ -7,14 +7,22 @@ export const farmerService = {
   // For now, we simulate fetching farmers
   async getFarmersByOfficer(officerId?: string): Promise<FarmerProfile[]> {
     try {
-      // Simulation:
-      await new Promise(resolve => setTimeout(resolve, 800));
-      return mockFarmers;
+      const url = officerId ? `/farmer-profiles?officerId=${officerId}` : '/farmer-profiles';
+      const data = await fetchWithAuth(url);
       
-      // Real API:
-      // const url = officerId ? `/api/officers/${officerId}/farmers` : '/api/farmers';
-      // const response = await fetchWithAuth(url);
-      // return response.data;
+      // The backend returns an array of farmer profiles containing { id, userId, phone, location, performanceScore, status, user: { fullName } }.
+      // We map this to the frontend FarmerProfile type:
+      return data.map((profile: any) => ({
+        id: profile.id,
+        user_id: profile.userId,
+        full_name: profile.user?.full_name || profile.user?.fullName || 'Tanpa Nama',
+        phone: profile.phone,
+        location: profile.location,
+        farm_count: profile.user?.farms?.length || 0, // Fallback if backend doesn't return
+        total_land: profile.user?.farms?.reduce((acc: number, f: any) => acc + (f.size || 0), 0) || 0,
+        performance_score: profile.performanceScore || profile.performance_score,
+        status: profile.status,
+      }));
     } catch (error) {
       console.error('Failed to fetch farmers', error);
       throw error;
@@ -23,12 +31,19 @@ export const farmerService = {
 
   async getFarmerById(id: string): Promise<FarmerProfile | null> {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      return mockFarmers.find(f => f.id === id) || null;
+      const profile = await fetchWithAuth(`/farmer-profiles/${id}`);
       
-      // Real API:
-      // const response = await fetchWithAuth(`/api/farmers/${id}`);
-      // return response.data;
+      return {
+        id: profile.id,
+        user_id: profile.userId,
+        full_name: profile.user?.full_name || profile.user?.fullName || 'Tanpa Nama',
+        phone: profile.phone,
+        location: profile.location,
+        farm_count: profile.user?.farms?.length || 0,
+        total_land: profile.user?.farms?.reduce((acc: number, f: any) => acc + (f.size || 0), 0) || 0,
+        performance_score: profile.performanceScore || profile.performance_score,
+        status: profile.status,
+      };
     } catch (error) {
       console.error(`Failed to fetch farmer ${id}`, error);
       throw error;
