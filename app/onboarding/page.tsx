@@ -118,9 +118,7 @@ export default function OnboardingPage() {
                   >
                     <option value="" disabled>Pilih Kabupaten/Kota</option>
                     {Object.keys(REGENCY_DISTRICTS).map((regency) => (
-                      <option key={regency} value={regency}>
-                        {regency}
-                      </option>
+                      <option key={regency} value={regency}>{regency}</option>
                     ))}
                   </select>
                 </div>
@@ -139,15 +137,13 @@ export default function OnboardingPage() {
                     name="district"
                     required
                     disabled={!formData.regency}
-                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 text-slate-900 transition-colors appearance-none disabled:opacity-50"
+                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 text-slate-900 transition-colors appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
                     value={formData.district}
                     onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                   >
                     <option value="" disabled>Pilih Kecamatan</option>
-                    {formData.regency && REGENCY_DISTRICTS[formData.regency].map((district) => (
-                      <option key={district} value={district}>
-                        {district}
-                      </option>
+                    {formData.regency && REGENCY_DISTRICTS[formData.regency as keyof typeof REGENCY_DISTRICTS]?.map((district) => (
+                      <option key={district} value={district}>{district}</option>
                     ))}
                   </select>
                 </div>

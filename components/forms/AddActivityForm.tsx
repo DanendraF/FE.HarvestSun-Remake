@@ -36,6 +36,7 @@ import { toast } from 'sonner';
 import { Farm, Activity, ActivityType } from '@/types';
 import { activityService } from '@/lib/api/activityService';
 import { masterDataService } from '@/lib/api/masterDataService';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 const activitySchema = z.object({
   farmId: z.string().min(1, { message: 'Pilih lahan' }),
@@ -56,6 +57,7 @@ interface AddActivityFormProps {
 }
 
 export function AddActivityForm({ children, farms, initialData, onSuccess }: AddActivityFormProps) {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activityTypes, setActivityTypes] = useState<ActivityType[]>([]);
@@ -119,6 +121,7 @@ export function AddActivityForm({ children, farms, initialData, onSuccess }: Add
       } else {
         await activityService.createActivity({
           ...values,
+          userId: user?.id,
           date: values.date.toISOString(),
         } as any);
         toast.success('Aktivitas berhasil ditambahkan');
