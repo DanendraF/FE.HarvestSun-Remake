@@ -7,7 +7,7 @@ import { farmService } from '@/lib/api/farmService';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Farm } from '@/types';
 import { cn } from '@/lib/utils';
-import { MapPin, Sprout } from 'lucide-react';
+import { MapPin, Sprout, Eye } from 'lucide-react';
 
 import {
   Dialog,
@@ -83,6 +83,22 @@ export default function OfficerFarmsPage() {
         </div>
       ),
     },
+    {
+      key: 'action',
+      header: 'Aksi',
+      render: (row: Farm) => (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedFarm(row);
+          }}
+          className="p-1.5 rounded-md hover:bg-accent hover:text-accent-foreground text-muted-foreground transition-colors"
+          title="Lihat Peta Lahan"
+        >
+          <Eye className="w-4 h-4" />
+        </button>
+      ),
+    },
   ];
 
   return (
@@ -131,7 +147,6 @@ export default function OfficerFarmsPage() {
             showRowNumber
             pagination
             pageSize={25}
-            onRowClick={(farm) => setSelectedFarm(farm)}
           />
         )}
       </div>
