@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Leaf, MapPin, Phone } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { REGENCY_DISTRICTS } from '@/lib/data/locations';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function OnboardingPage() {
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     phone: '',
+    regency: '',
     district: '',
     location: '',
   });
@@ -97,6 +99,32 @@ export default function OnboardingPage() {
               </div>
 
               <div>
+                <label htmlFor="regency" className="block text-sm font-medium text-slate-700 mb-1">
+                  Kabupaten / Kota
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <MapPin className="h-5 w-5 text-slate-400" />
+                  </div>
+                  <select
+                    id="regency"
+                    name="regency"
+                    required
+                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 text-slate-900 transition-colors appearance-none"
+                    value={formData.regency}
+                    onChange={(e) => {
+                      setFormData({ ...formData, regency: e.target.value, district: '' });
+                    }}
+                  >
+                    <option value="" disabled>Pilih Kabupaten/Kota</option>
+                    {Object.keys(REGENCY_DISTRICTS).map((regency) => (
+                      <option key={regency} value={regency}>{regency}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
                 <label htmlFor="district" className="block text-sm font-medium text-slate-700 mb-1">
                   Kecamatan
                 </label>
@@ -108,15 +136,15 @@ export default function OnboardingPage() {
                     id="district"
                     name="district"
                     required
-                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 text-slate-900 transition-colors appearance-none"
+                    disabled={!formData.regency}
+                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 text-slate-900 transition-colors appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
                     value={formData.district}
                     onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                   >
                     <option value="" disabled>Pilih Kecamatan</option>
-                    <option value="Kecamatan A">Kecamatan A</option>
-                    <option value="Kecamatan B">Kecamatan B</option>
-                    <option value="Kecamatan C">Kecamatan C</option>
-                    <option value="Kecamatan D">Kecamatan D</option>
+                    {formData.regency && REGENCY_DISTRICTS[formData.regency as keyof typeof REGENCY_DISTRICTS]?.map((district) => (
+                      <option key={district} value={district}>{district}</option>
+                    ))}
                   </select>
                 </div>
               </div>
